@@ -1,0 +1,14 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Query {
+  """Método inicial para las configuraciones GraphQL"""
+  hello: String!
+
+  """Generación de número aleatorio"""
+  randomNumber: Float!
+
+  """Retornar el arreglo de valores pares a partir de un número dado"""
+  generateArrayPairs(value: Int): [Int!]!
+}
