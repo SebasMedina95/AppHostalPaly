@@ -2,72 +2,57 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## DESCRIPCIÓN DEL PROYECTO ##
+Esta aplicación backend tiene como proposito manejar toda la lógica de un sistema de reservas de un hostal, que a su vez, maneja un apartado de atracciones y sistemas de restaurantes al interior. El objetivo será manejar toda la información correlacionada a las habitaciones, las comodidades asociadas a las habitaciones, las habitaciones se encuentran agrupadas en temáticas, mismas que serán gestionadas por lote genérico a la hora de aplicar una reserva; serán gestionados los temas de creación de perfiles de usuario para que realicen las reservaciones así como también para la gestión interna hablando de los temas del administrador, por lo que este sistema tendrá un manejo de roles "a través de la mecánica de arrays de roles" con las que será gestionada está parte; en el apartado del restaurante serán consideradas las cartas de los platillos, detalles e imágenes así como también las diferentes atracciones del sitio que amplian los servicios y hacen parte de los paquetes que ofrece el hotel, las reservaciones comprenderan paquetes que a su vez generan planes temáticos.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+``Desarrollado por``: [Juan Sebastian Medina Toro](https://www.linkedin.com/in/juan-sebastian-medina-toro-887491249/).
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
+## PASOS DE INSTALACIÓN ##
+Una vez descagada la aplicación, siga los siguientes pasos:
+1. Ejecute el comando de instalación de dependencias:
 ```bash
 $ npm install
 ```
-
-## Running the app
-
+2. Renombre el archivo ``.env.template`` a ``.env`` y configure las variables de entorno
+3. Ejecute el comando para levantar la imagen de Docker:
 ```bash
-# development
-$ npm run start
-
-# watch mode
+$ docker compose up -d
+```
+4. Una vez levantada la base de datos, creemos sus tablas respectivas, para ello debemos ejecutar todas las migraciones que componen la base de datos con el comando:
+```bash
+$ npm run migration:run
+```
+Posterior a este paso, corroboar en la base de datos la creación de las tablas.
+5. Ejecute el siguiente comando para llenar la información inicial de la base de datos, esto es una semilla de información preliminar para arrancar a usar los aspectos básicos del sistema, ejecute el siguiente END POINT usando el verbo POST (No requiere por ahora auth):
+```bash
+$ // P E N D I E N T E //
+```
+6. Ejecutar en modo desarrollo usando el comando:
+```bash
 $ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
-
-## Test
-
+7. Puede verificar que la aplicación este OK en la terminal o bien entrando al sitio:
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+$ http://localhost:5500/api-hostalpaly/v1
 ```
 
-## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
+## ``INFORMACIÓN ADICIONAL IMPORTANTE`` ##
+## CREACIÓN Y EJECUCIÓN DE MIGRACIONES ##
+1. Para la creación de las migraciones, debemos ejecutar el comando:
+```bash
+$ npm run migration:generate ./src/config/database/migrations/NOMBRE_DE_MIGRACION
+```
+Debemos cambiar el ``NOMBRE_DE_MIGRACION`` por el nombre que le vayamos a dar a la migración, es de suma importancia y recomendación que los nombres de la migración no tengan espacios, usar ``-`` o ``_`` como separadores.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+2. Para la ejecución de la(s) migración(es) debemos usar el comando:
+```bash
+$ npm run migration:run
+```
+Este comando ejecutará todas las migraciones que hayan en la carpeta de migraciones dentro del proyecto, por eso es importante tenerlas actualizadas al orden del día. Al iniciar el proyecto la primera vez, debemos ejecutar este comando para poder generar la base de datos.
 
-## License
-
-Nest is [MIT licensed](LICENSE).
+3. Si desea revertir la última migración, podemos usar el comando:
+```bash
+$ npm run migration:rollback
+```
