@@ -28,6 +28,7 @@ model TBL_CATEGORIES {
   description          String    @unique @db.VarChar(5000)
   theme                ETheme
   status               Boolean   @default(true)
+  populate             Int       @default(0)
   userDocumentCreateAt String?
   createDateAt         DateTime?
   userDocumentUpdateAt String?

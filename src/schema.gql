@@ -9,7 +9,7 @@ type Comfort {
 
 type Category {
   """Id autoincrementado para la PK"""
-  id: Int!
+  id: ID!
 
   """Nombre de la categoría"""
   name: String!
@@ -22,6 +22,9 @@ type Category {
 
   """Estado de la categoría"""
   status: Boolean!
+
+  """Cantidad de Reservaciones - Popularidad"""
+  populate: Int!
 
   """Documento del usuario que registra"""
   userDocumentCreateAt: String!
@@ -77,12 +80,26 @@ input UpdateComfortInput {
 }
 
 input CreateCategoryInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  name: String!
+  description: String!
+  theme: String!
+  status: Boolean
+  populate: Int
+  userDocumentCreateAt: String
+  createDateAt: DateTime
+  userDocumentUpdateAt: String
+  updateDateAt: DateTime
 }
 
 input UpdateCategoryInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  name: String
+  description: String
+  theme: String
+  status: Boolean
+  populate: Int
+  userDocumentCreateAt: String
+  createDateAt: DateTime
+  userDocumentUpdateAt: String
+  updateDateAt: DateTime
   id: Int!
 }

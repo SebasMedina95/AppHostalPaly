@@ -1,9 +1,12 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType,
+         Field,
+         Int,
+         ID } from '@nestjs/graphql';
 
 @ObjectType()
 export class Category {
 
-  @Field( () => Int, { description: "Id autoincrementado para la PK" })
+  @Field( () => ID, { description: "Id autoincrementado para la PK" })
   id: number;
 
   @Field( () => String, { description: "Nombre de la categoría" })
@@ -17,6 +20,9 @@ export class Category {
 
   @Field( () => Boolean, { description: "Estado de la categoría" })
   status: boolean;
+  
+  @Field( () => Int, { description: "Cantidad de Reservaciones - Popularidad" })
+  populate: number;
 
   @Field( () => String, { description: "Documento del usuario que registra" })
   userDocumentCreateAt: string;
