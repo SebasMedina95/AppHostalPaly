@@ -33,7 +33,12 @@ $ npm run start:dev
 ```
 7. Puede verificar que la aplicación este OK en la terminal o bien entrando al sitio:
 ```bash
-$ http://localhost:5500/api-hostalpaly/v1
+$ http://localhost:5500/api-hostalpaly
+```
+Si en el caso anterior no obtiene respuesta, asegurece de tener el servidor estático configurado, al ser una aplicación con GraphQL entonces la configuración está dada para la confguración por defecto del servidor de Apollo.
+8. Para la revisión en Apollo Studio, ingrese a la siguiente URL pero teniendo el proyecto en ejecución DEV:
+```bash
+$ http://localhost:5500/graphql
 ```
 
 

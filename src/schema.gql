@@ -2,6 +2,16 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Comfort {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Category {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 type Query {
   """Método inicial para las configuraciones GraphQL"""
   hello: String!
@@ -11,4 +21,39 @@ type Query {
 
   """Retornar el arreglo de valores pares a partir de un número dado"""
   generateArrayPairs(value: Int): [Int!]!
+  comforts: [Comfort!]!
+  comfort(id: Int!): Comfort!
+  categories: [Category!]!
+  category(id: Int!): Category!
+}
+
+type Mutation {
+  createComfort(createComfortInput: CreateComfortInput!): Comfort!
+  updateComfort(updateComfortInput: UpdateComfortInput!): Comfort!
+  removeComfort(id: Int!): Comfort!
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
+  updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
+  removeCategory(id: Int!): Category!
+}
+
+input CreateComfortInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateComfortInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateCategoryInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateCategoryInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }
