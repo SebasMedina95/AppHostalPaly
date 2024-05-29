@@ -8,9 +8,38 @@ type Comfort {
 }
 
 type Category {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  """Id autoincrementado para la PK"""
+  id: Int!
+
+  """Nombre de la categoría"""
+  name: String!
+
+  """Descripción de la categoría"""
+  description: String!
+
+  """Temática de la categoría"""
+  theme: String!
+
+  """Estado de la categoría"""
+  status: Boolean!
+
+  """Documento del usuario que registra"""
+  userDocumentCreateAt: String!
+
+  """Fecha de Registro"""
+  createDateAt: DateTime!
+
+  """Documento del usuario que actualiza"""
+  userDocumentUpdateAt: String!
+
+  """Fecha de Actuaización"""
+  updateDateAt: DateTime!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Query {
   """Método inicial para las configuraciones GraphQL"""

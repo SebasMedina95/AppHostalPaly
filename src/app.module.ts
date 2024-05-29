@@ -37,9 +37,7 @@ import { CategoriesModule } from './modules/categories/categories.module';
     }),
 
     IntroModule,
-
     ComfortsModule,
-
     CategoriesModule,
 
   ],
