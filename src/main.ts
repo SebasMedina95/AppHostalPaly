@@ -25,6 +25,6 @@ async function bootstrap() {
   //? Configuración de puerto
   await app.listen( process.env.PORT );
   logger.log(`La APP está corriendo en puerto ${process.env.PORT}`);
-  logger.log(`El Servidor de Apollo está corriendo en ${process.env.WEB_APOLLO_SERVICE_URL}${process.env.PORT}`);
+  logger.log(`El Servidor de Apollo está corriendo en ${process.env.WEB_APOLLO_SERVICE_URL}`);
 }
 bootstrap();
