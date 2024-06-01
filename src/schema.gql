@@ -7,6 +7,15 @@ type Comfort {
   exampleField: Int!
 }
 
+type PageMetaInput {
+  page: Int!
+  take: Int!
+  itemCount: Int!
+  pageCount: Int!
+  hasPreviousPage: Boolean!
+  hasNextPage: Boolean!
+}
+
 type Category {
   """Id autoincrementado para la PK"""
   id: ID!
@@ -44,6 +53,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type CategoryPaginationResponse {
+  data: [Category!]!
+  meta: PageMetaInput!
+}
+
 type Query {
   """Método inicial para las configuraciones GraphQL"""
   hello: String!
@@ -55,8 +69,15 @@ type Query {
   generateArrayPairs(value: Int): [Int!]!
   comforts: [Comfort!]!
   comfort(id: Int!): Comfort!
-  categories: [Category!]!
+  categories(pageOptionsArgs: PageOptionsArgs!): CategoryPaginationResponse!
   category(id: Int!): Category!
+}
+
+input PageOptionsArgs {
+  order: String! = "asc"
+  page: Int! = 1
+  take: Int! = 10
+  search: String! = ""
 }
 
 type Mutation {

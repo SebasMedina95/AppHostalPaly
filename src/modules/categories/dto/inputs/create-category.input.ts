@@ -34,6 +34,7 @@ export class CreateCategoryInput {
     "Suite",
     "Familiar",
     "Estandar",
+    "Hospedaje",
   ], { message: "La temática debe ser una opción válida" })
   @IsNotEmpty({ message: "El tema de la categoría es obligatoria" })
   @Field( () => String )

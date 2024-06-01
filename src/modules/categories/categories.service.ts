@@ -1,10 +1,17 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable,
+         Logger } from '@nestjs/common';
+
 import { CreateCategoryInput } from './dto/inputs/create-category.input';
 import { UpdateCategoryInput } from './dto/inputs/update-category.input';
-import { Category } from './entities/category.entity';
+
 import { PrismaService } from 'src/config/prisma/prisma.service';
+import { Category } from './entities/category.entity';
 import { CustomError } from 'src/helpers/errors/custom.error';
-import { ETheme } from '@prisma/client';
+
+import { PageOptionsArgs } from 'src/helpers/pagination/dto/page-options.args';
+import { PageMetaInput } from 'src/helpers/pagination/dto/page-meta.input';
+import { PageInput } from 'src/helpers/pagination/dto/page.input';
+import { CategoryPaginationResponse } from './types/pagination-response.type';
 
 @Injectable()
 export class CategoriesService {
@@ -17,7 +24,6 @@ export class CategoriesService {
 
     const logger = new Logger('CategoriesService - create')
     const { name, description, theme } = createCategoryInput;
-    const themeEnum = theme as ETheme;
 
     try {
 
@@ -36,7 +42,7 @@ export class CategoriesService {
         data: {
           name,
           description,
-          theme: themeEnum,
+          theme,
           userDocumentCreateAt: "123456789",
           createDateAt: new Date(),
           userDocumentUpdateAt: "123456789",
@@ -61,15 +67,70 @@ export class CategoriesService {
   }
 
 
-  async findAll(): Promise<Category[] | CustomError> {
+  async findAll(
+    pageOptionsArgs: PageOptionsArgs
+  ): Promise<CategoryPaginationResponse> {
 
     const logger = new Logger('CategoriesService - findAll')
+    const { take, page, search, order } = pageOptionsArgs;
+    let getCategories: Category[] = [];
+    let itemCount: number = 0;
 
     try {
       
-      const getCategories = await this.prisma.tBL_CATEGORIES.findMany({});
+      if( search && search !== "" && search !== null && search !== undefined  ){
 
-      return getCategories;
+        getCategories = await this.prisma.tBL_CATEGORIES.findMany({
+          take,
+          skip: Number(page - 1) * take,
+          where: {
+              OR: [
+                  { name: { contains: search, mode: 'insensitive' } },
+                  { description: { contains: search, mode: 'insensitive' } },
+                  { theme: { contains: search, mode: 'insensitive' } },
+              ],
+              AND: [
+                  { status: true }
+              ]
+          },
+          orderBy: { id: order }
+        });
+
+        itemCount = await this.prisma.tBL_CATEGORIES.count({
+          where: {
+            OR: [
+                { name: { contains: search, mode: 'insensitive' } },
+                { description: { contains: search, mode: 'insensitive' } },
+                { theme: { contains: search, mode: 'insensitive' } },
+            ],
+            AND: [
+                { status: true }
+            ]
+          },
+        });
+
+      }else{
+
+        getCategories = await this.prisma.tBL_CATEGORIES.findMany({
+          take,
+          skip: Number(page - 1) * take,
+          where: {  status: true },
+          orderBy: { id: order }
+        });
+
+        itemCount = await this.prisma.tBL_CATEGORIES.count({
+          where: { status: true },
+        });
+
+      }
+
+      const pageMetaDto = new PageMetaInput({ itemCount, pageOptionsArgs });
+      const finalResult = new PageInput(getCategories, pageMetaDto)
+
+      return {
+        data: getCategories,
+        meta: pageMetaDto
+      };
 
     } catch (error) {
 
@@ -125,7 +186,6 @@ export class CategoriesService {
 
     const logger = new Logger('CategoriesService - update');
     const { name, description, theme } = updateCategoryInput;
-    const themeEnum = theme as ETheme;
 
     try {
 
@@ -158,7 +218,7 @@ export class CategoriesService {
         data: {
           name,
           description,
-          theme: themeEnum,
+          theme,
           userDocumentUpdateAt: "123456789",
           updateDateAt: new Date(),
         }

@@ -10,6 +10,9 @@ import { Category } from './entities/category.entity';
 import { CreateCategoryInput } from './dto/inputs/create-category.input';
 import { UpdateCategoryInput } from './dto/inputs/update-category.input';
 import { CustomError } from 'src/helpers/errors/custom.error';
+import { PageOptionsArgs } from 'src/helpers/pagination/dto/page-options.args';
+import { PageInput } from 'src/helpers/pagination/dto/page.input';
+import { CategoryPaginationResponse } from './types/pagination-response.type';
 
 @Resolver(() => Category)
 export class CategoriesResolver {
@@ -24,10 +27,12 @@ export class CategoriesResolver {
 
   }
 
-  @Query(() => [Category], { name: 'categories' })
-  async findAll(): Promise<Category[] | CustomError> {
+  @Query(() => CategoryPaginationResponse, { name: 'categories' })
+  async findAll(
+    @Args('pageOptionsArgs') pageOptionsArgs: PageOptionsArgs
+  ): Promise<CategoryPaginationResponse> {
 
-    return this.categoriesService.findAll();
+    return this.categoriesService.findAll(pageOptionsArgs);
 
   }
 

@@ -13,20 +13,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum ETheme {
-  Presidencial
-  Romantica
-  Caribe
-  Suite
-  Familiar
-  Estandar
-}
+// Dejemoslo comentado para que las consultas sean más directas
+// enum ETheme {
+//   Presidencial
+//   Romantica
+//   Caribe
+//   Suite
+//   Familiar
+//   Estandar
+// }
 
 model TBL_CATEGORIES {
   id                   Int       @id @default(autoincrement())
   name                 String    @unique @db.VarChar(150)
   description          String    @unique @db.VarChar(5000)
-  theme                ETheme
+  theme                String?
   status               Boolean   @default(true)
   populate             Int       @default(0)
   userDocumentCreateAt String?
