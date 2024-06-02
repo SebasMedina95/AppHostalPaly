@@ -16,9 +16,10 @@ import { CategoryPaginationResponse } from './types/pagination-response.type';
 
 @Resolver(() => Category)
 export class CategoriesResolver {
+
   constructor(private readonly categoriesService: CategoriesService) {}
 
-  @Mutation(() => Category)
+  @Mutation(() => Category, { description: "Crear una nueva categoría" })
   async createCategory(
     @Args('createCategoryInput') createCategoryInput: CreateCategoryInput
   ): Promise<Category | CustomError> {
@@ -27,7 +28,7 @@ export class CategoriesResolver {
 
   }
 
-  @Query(() => CategoryPaginationResponse, { name: 'categories' })
+  @Query(() => CategoryPaginationResponse, { name: 'categories', description: "Listar categorías con paginación y filtro" })
   async findAll(
     @Args('pageOptionsArgs') pageOptionsArgs: PageOptionsArgs
   ): Promise<CategoryPaginationResponse> {
@@ -36,7 +37,7 @@ export class CategoriesResolver {
 
   }
 
-  @Query(() => Category, { name: 'category' })
+  @Query(() => Category, { name: 'category', description: "Obtener categoría por ID" })
   async findOne(
     @Args('id', { type: () => Int }) id: number
   ): Promise<Category | CustomError> {
@@ -45,7 +46,7 @@ export class CategoriesResolver {
 
   }
 
-  @Mutation(() => Category)
+  @Mutation(() => Category, { description: "Actualizar una categoría" })
   async updateCategory(
     @Args('updateCategoryInput') updateCategoryInput: UpdateCategoryInput
   ): Promise<Category | CustomError> {
@@ -54,7 +55,7 @@ export class CategoriesResolver {
 
   }
 
-  @Mutation(() => Category)
+  @Mutation(() => Category, { description: "Eliminar lógicamente una categoría" })
   async removeCategory(
     @Args('id', { type: () => Int }) id: number
   ): Promise<Category | CustomError> {

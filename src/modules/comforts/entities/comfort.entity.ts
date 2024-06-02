@@ -1,7 +1,32 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType,
+         Field,
+         ID } from '@nestjs/graphql';
 
 @ObjectType()
 export class Comfort {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+
+  @Field( () => ID, { description: "Id autoincrementado para la PK" })
+  id: number;
+
+  @Field( () => String, { description: "Nombre de la comodidad" })
+  name: string;
+
+  @Field( () => String, { description: "Descripción de la comodidad" })
+  description: string;
+
+  @Field( () => Boolean, { description: "Estado de la comodidad" })
+  status: boolean;
+
+  @Field( () => String, { description: "Documento del usuario que registra" })
+  userDocumentCreateAt: string;
+
+  @Field( () => Date, { description: "Fecha de Registro" })
+  createDateAt: Date;
+
+  @Field( () => String, { description: "Documento del usuario que actualiza" })
+  userDocumentUpdateAt: string;
+
+  @Field( () => Date, { description: "Fecha de Actuaización" })
+  updateDateAt: Date;
+
 }

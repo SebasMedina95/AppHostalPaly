@@ -2,11 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Comfort {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
 type PageMetaInput {
   page: Int!
   take: Int!
@@ -14,6 +9,42 @@ type PageMetaInput {
   pageCount: Int!
   hasPreviousPage: Boolean!
   hasNextPage: Boolean!
+}
+
+type Comfort {
+  """Id autoincrementado para la PK"""
+  id: ID!
+
+  """Nombre de la comodidad"""
+  name: String!
+
+  """Descripción de la comodidad"""
+  description: String!
+
+  """Estado de la comodidad"""
+  status: Boolean!
+
+  """Documento del usuario que registra"""
+  userDocumentCreateAt: String!
+
+  """Fecha de Registro"""
+  createDateAt: DateTime!
+
+  """Documento del usuario que actualiza"""
+  userDocumentUpdateAt: String!
+
+  """Fecha de Actuaización"""
+  updateDateAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type ComfortPaginationResponse {
+  data: [Comfort!]!
+  meta: PageMetaInput!
 }
 
 type Category {
@@ -48,11 +79,6 @@ type Category {
   updateDateAt: DateTime!
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 type CategoryPaginationResponse {
   data: [Category!]!
   meta: PageMetaInput!
@@ -67,9 +93,17 @@ type Query {
 
   """Retornar el arreglo de valores pares a partir de un número dado"""
   generateArrayPairs(value: Int): [Int!]!
-  comforts: [Comfort!]!
+
+  """Listar comodidades con paginación y filtro"""
+  comforts(pageOptionsArgs: PageOptionsArgs!): ComfortPaginationResponse!
+
+  """Obtener comodidad por ID"""
   comfort(id: Int!): Comfort!
+
+  """Listar categorías con paginación y filtro"""
   categories(pageOptionsArgs: PageOptionsArgs!): CategoryPaginationResponse!
+
+  """Obtener categoría por ID"""
   category(id: Int!): Category!
 }
 
@@ -81,22 +115,43 @@ input PageOptionsArgs {
 }
 
 type Mutation {
+  """Crear una nueva comodidad"""
   createComfort(createComfortInput: CreateComfortInput!): Comfort!
+
+  """Actualizar una comodidad"""
   updateComfort(updateComfortInput: UpdateComfortInput!): Comfort!
+
+  """Eliminar lógicamente una comodidad"""
   removeComfort(id: Int!): Comfort!
+
+  """Crear una nueva categoría"""
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
+
+  """Actualizar una categoría"""
   updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
+
+  """Eliminar lógicamente una categoría"""
   removeCategory(id: Int!): Category!
 }
 
 input CreateComfortInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  name: String!
+  description: String!
+  status: Boolean
+  userDocumentCreateAt: String
+  createDateAt: DateTime
+  userDocumentUpdateAt: String
+  updateDateAt: DateTime
 }
 
 input UpdateComfortInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  name: String
+  description: String
+  status: Boolean
+  userDocumentCreateAt: String
+  createDateAt: DateTime
+  userDocumentUpdateAt: String
+  updateDateAt: DateTime
   id: Int!
 }
 

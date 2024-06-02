@@ -35,3 +35,14 @@ model TBL_CATEGORIES {
   userDocumentUpdateAt String?
   updateDateAt         DateTime?
 }
+
+model TBL_COMFORTS {
+  id                   Int       @id @default(autoincrement())
+  name                 String    @unique @db.VarChar(150)
+  description          String    @unique @db.VarChar(500)
+  status               Boolean   @default(true)
+  userDocumentCreateAt String?
+  createDateAt         DateTime?
+  userDocumentUpdateAt String?
+  updateDateAt         DateTime?
+}

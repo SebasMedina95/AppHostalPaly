@@ -233,7 +233,7 @@ export class CategoriesService {
       
     } finally {
       
-      logger.log(`Obtener una categoría por ID finalizada`);
+      logger.log(`Actualizar una categoría por ID finalizada`);
       await this.prisma.$disconnect();
 
     }
@@ -267,7 +267,7 @@ export class CategoriesService {
       
     } finally {
       
-      logger.log(`Obtener una categoría por ID finalizada`);
+      logger.log(`Eliminado lógico de una categoría por ID finalizada`);
       await this.prisma.$disconnect();
 
     }
