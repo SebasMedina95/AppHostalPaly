@@ -12,14 +12,14 @@ import { IsEmail,
 export class SignupInput {
 
     @IsString({ message: "Los nombres del usuario deben ser válido" })
-    @MinLength(5, { message: "Los nombres del usuario deben tener al menos 5 caracteres" })
+    @MinLength(3, { message: "Los nombres del usuario deben tener al menos 3 caracteres" })
     @MaxLength(150, { message: "Los nombres del usuario no pueden exceder los 150 caracteres" })
     @IsNotEmpty({ message: "Los nombres del usuario son obligatorios" })
     @Field( () => String )
     names: string;
 
     @IsString({ message: "Los apellidos del usuario deben ser válido" })
-    @MinLength(5, { message: "Los apellidos del usuario deben tener al menos 5 caracteres" })
+    @MinLength(3, { message: "Los apellidos del usuario deben tener al menos 3 caracteres" })
     @MaxLength(150, { message: "Los apellidos del usuario no pueden exceder los 150 caracteres" })
     @IsNotEmpty({ message: "Los apellidos del usuario son obligatorios" })
     @Field( () => String )

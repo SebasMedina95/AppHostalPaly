@@ -14,7 +14,7 @@ import { User } from './entities/user.entity';
     User
   ],
   exports: [
-    UsersService,
+    UsersService, //* Para usarlo en el Auth
     User
   ]
 })

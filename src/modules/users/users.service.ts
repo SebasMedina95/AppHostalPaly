@@ -1,11 +1,16 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
-import { PageOptionsArgs } from 'src/helpers/pagination/dto/page-options.args';
+import { SignupInput } from '../auth/dto/inputs/signup.input';
+
+import { PageOptionsArgs } from '../../helpers/pagination/dto/page-options.args';
 import { UserPaginationResponse } from './types/pagination-response.type';
+import { CustomError } from '../../helpers/errors/custom.error';
+
 import { User } from './entities/user.entity';
-import { CustomError } from 'src/helpers/errors/custom.error';
-import { PrismaService } from 'src/config/prisma/prisma.service';
+
+import { PrismaService } from '../../config/prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
@@ -14,9 +19,52 @@ export class UsersService {
     private prisma: PrismaService
   ){}
 
-  //? Lo llamaremos desde Auth
-  create(createUserInput: CreateUserInput) {
-    return 'This action adds a new user';
+  //? ************************************ ?//
+  //? ***** Lo llamaremos desde Auth ***** ?//
+  //? ************************************ ?//
+  async create(signupInput: SignupInput): Promise<User | CustomError> {
+
+    const logger = new Logger('UsersService llamando a AuthService - create')
+
+    try {
+      
+      const existUser = await this.prisma.tBL_USERS.findMany({
+        where: { email : signupInput.email }
+      })
+
+      if( existUser.length > 0 ) 
+        return CustomError.badRequestError("Ya existe un usuario con este email");
+
+      if( signupInput.password != signupInput.passwordConfirm )
+        return CustomError.badRequestError("Las contraseñas no coinciden");
+
+      const newUser = await this.prisma.tBL_USERS.create({
+        data: {
+          names: signupInput.names,
+          lastnames: signupInput.lastnames,
+          email: signupInput.email,
+          password: signupInput.password,
+          gender: signupInput.gender,
+          img: signupInput.img,
+          phone1: signupInput.phone1,
+          phone2: signupInput.phone2,
+        }
+      })
+
+      return newUser;
+
+    } catch (error) {
+
+      logger.log(`Ocurrió un error al intentar crear el usuario: ${error}`);
+      throw CustomError.internalServerError(`${error}`);
+      
+    } finally {
+      
+      logger.log(`Creación de usuario finalizada`);
+      await this.prisma.$disconnect();
+
+    }
+
   }
 
 
