@@ -38,7 +38,7 @@ $ http://localhost:5500/api-hostalpaly
 Si en el caso anterior no obtiene respuesta, asegurece de tener el servidor estático configurado, al ser una aplicación con GraphQL entonces la configuración está dada para la confguración por defecto del servidor de Apollo.
 8. Para la revisión en Apollo Studio, ingrese a la siguiente URL pero teniendo el proyecto en ejecución DEV:
 ```bash
-$ http://localhost:5500/graphql
+$ http://localhost:*PORT*/graphql
 ```
 
 
@@ -75,3 +75,7 @@ $ npm run migration:rollback
     ```
     npx prisma generate
     ```
+
+## APUNTES ADICIONALES ##
+- Se crearon Types para manejar la estructuración de la paginación con GraphQL y generar un tipado más estructurado conforme a los requerimientos. Lo que ocurre es que como se maneja diferente a NestJS sin GraphQL el tema de la paginación, nos apoyamos de los Types por Módulos para generar una estructura genérica mejor implementada para una paginación que provea mejor información así como el tema del filtro.
+- 

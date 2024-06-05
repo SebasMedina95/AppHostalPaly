@@ -84,6 +84,51 @@ type CategoryPaginationResponse {
   meta: PageMetaInput!
 }
 
+type User {
+  """Id autoincrementado para la PK"""
+  id: ID!
+
+  """Nombres del usuario"""
+  names: String!
+
+  """Apellidos del usuario"""
+  lastnames: String!
+
+  """Email del usuario"""
+  email: String!
+
+  """Email validado del usuario"""
+  emailValidated: Boolean!
+
+  """Roles del usuario"""
+  roles: [String!]!
+
+  """Sexo del usuario"""
+  gender: String!
+
+  """Avatar del usuario"""
+  img: String
+
+  """Teléfono 1 del usuario"""
+  phone1: String
+
+  """Teléfono 2 del usuario"""
+  phone2: String
+
+  """Estado del usuario"""
+  isBlock: Boolean!
+}
+
+type UserPaginationResponse {
+  data: [User!]!
+  meta: PageMetaInput!
+}
+
+type AuthResponse {
+  user: User!
+  token: String!
+}
+
 type Query {
   """Método inicial para las configuraciones GraphQL"""
   hello: String!
@@ -105,6 +150,8 @@ type Query {
 
   """Obtener categoría por ID"""
   category(id: Int!): Category!
+  users(pageOptionsArgs: PageOptionsArgs!): UserPaginationResponse!
+  user(id: Int!): User!
 }
 
 input PageOptionsArgs {
@@ -132,6 +179,8 @@ type Mutation {
 
   """Eliminar lógicamente una categoría"""
   removeCategory(id: Int!): Category!
+  blockUser(id: Int!): User!
+  signup(signupInput: SignupInput!): AuthResponse!
 }
 
 input CreateComfortInput {
@@ -178,4 +227,17 @@ input UpdateCategoryInput {
   userDocumentUpdateAt: String
   updateDateAt: DateTime
   id: Int!
+}
+
+input SignupInput {
+  names: String!
+  lastnames: String!
+  email: String!
+  password: String!
+  passwordConfirm: String!
+  gender: String!
+  img: String
+  phone1: String
+  phone2: String
+  isBlock: Boolean
 }

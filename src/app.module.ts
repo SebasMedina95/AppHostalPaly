@@ -11,6 +11,8 @@ import { IntroModule } from './config/intro/intro.module';
 import { dataSourceOptions } from './config/database/data-source';
 import { ComfortsModule } from './modules/comforts/comforts.module';
 import { CategoriesModule } from './modules/categories/categories.module';
+import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { CategoriesModule } from './modules/categories/categories.module';
     IntroModule,
     ComfortsModule,
     CategoriesModule,
+    UsersModule,
+    AuthModule,
 
   ],
   controllers: [],
