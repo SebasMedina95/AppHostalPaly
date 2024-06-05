@@ -1,7 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+
 import { CreateAuthInput } from './dto/inputs/create-auth.input';
 import { UpdateAuthInput } from './dto/inputs/update-auth.input';
 import { SignupInput } from './dto/inputs/signup.input';
+import { LoginInput } from './dto/inputs/login.input';
 
 import { AuthResponse } from './types/auth-response.type';
 import { CustomError } from '../../helpers/errors/custom.error';
@@ -53,6 +56,42 @@ export class AuthService {
       logger.log(`Ocurrió un error al intentar crear el usuario: ${error}`);
       throw CustomError.internalServerError(`${error}`);
       
+    }
+
+  }
+
+  async login(loginInput: LoginInput): Promise<AuthResponse | CustomError> {
+
+    const logger = new Logger('AuthService - login');
+    const token: string = "ABC123";
+    const { email, password } = loginInput;
+
+    //* Paso 1. Verificamos el email
+    const getUserByEmail: User | CustomError = await this.usersService.findOneByEmail( email );
+
+    if( !getUserByEmail || getUserByEmail == null || getUserByEmail == undefined )
+      return CustomError.badRequestError("No fue encontrado el email proporcionado");
+
+    //* Paso 2. Verificamos que el email se haya validado
+    const convertUserResponse: User = getUserByEmail as User; //Forzamos porque en este punto ya lo tenemos
+    if( !convertUserResponse.emailValidated )
+      return CustomError.badRequestError("El usuario no ha confirmado su email");
+
+    //* Paso 3. Validamos la contraseña
+    if( !bcrypt.compareSync( password, convertUserResponse.password ) )
+      return CustomError.badRequestError("La contraseña no coincide");
+
+    //* Paso 4. Validamos que el usuario no este bloqueado
+    if( convertUserResponse.isBlock )
+      return CustomError.badRequestError("El usuario esta bloqueado, contacte con el admin");
+
+    //* Paso 5. Generamos el JWT.
+
+    console.log({getUserByEmail});
+
+    return {
+      user: getUserByEmail,
+      token: "ABC123"
     }
 
   }

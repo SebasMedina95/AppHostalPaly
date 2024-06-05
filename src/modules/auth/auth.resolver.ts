@@ -6,6 +6,7 @@ import { UpdateAuthInput } from './dto/inputs/update-auth.input';
 import { SignupInput } from './dto/inputs/signup.input';
 import { AuthResponse } from './types/auth-response.type';
 import { CustomError } from '../../helpers/errors/custom.error';
+import { LoginInput } from './dto/inputs/login.input';
 
 @Resolver(() => Auth)
 export class AuthResolver {
@@ -17,7 +18,7 @@ export class AuthResolver {
   @Mutation( () => AuthResponse, { name: 'signup' } )
   async signup(
     @Args('signupInput') signupInput: SignupInput
-  ): Promise<AuthResponse  | CustomError> {
+  ): Promise<AuthResponse | CustomError> {
 
     return this.authService.signup(signupInput);
 
@@ -31,13 +32,14 @@ export class AuthResolver {
 
   // }
 
-  // @Mutation()
-  // login(): Promise<any> {
+  @Mutation( () => AuthResponse, { name: 'login' } )
+  async login(
+    @Args('loginInput') loginInput: LoginInput
+  ): Promise<AuthResponse | CustomError> {
 
-  //   // return this.authService.login();
-  //   return null;
+    return this.authService.login(loginInput);
 
-  // }
+  }
 
   // @Mutation()
   // recoveryPassword(): Promise<any> {

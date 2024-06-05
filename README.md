@@ -23,7 +23,8 @@ $ docker compose up -d
 $ npm run migration:run
 ```
 Posterior a este paso, corroboar en la base de datos la creación de las tablas.
-5. Ejecute el siguiente comando para llenar la información inicial de la base de datos, esto es una semilla de información preliminar para arrancar a usar los aspectos básicos del sistema, ejecute el siguiente END POINT usando el verbo POST (No requiere por ahora auth):
+
+5. Ejecute el siguiente comando (SEED) para llenar la información inicial de la base de datos, esto es una semilla de información preliminar para arrancar a usar los aspectos básicos del sistema, ejecute el siguiente END POINT usando el verbo POST (No requiere por ahora auth):
 ```bash
 $ // P E N D I E N T E //
 ```
@@ -78,4 +79,4 @@ $ npm run migration:rollback
 
 ## APUNTES ADICIONALES ##
 - Se crearon Types para manejar la estructuración de la paginación con GraphQL y generar un tipado más estructurado conforme a los requerimientos. Lo que ocurre es que como se maneja diferente a NestJS sin GraphQL el tema de la paginación, nos apoyamos de los Types por Módulos para generar una estructura genérica mejor implementada para una paginación que provea mejor información así como el tema del filtro.
-- 
+- Para la confirmación del correo electrónico, a pesar de que estamos trabajando con GraphQL End Points, se optó por crear un sub modulo que funcionara como una API RESTful tradicional solamente para la generación del cambio de comprobación de email, esto con la finalidad de no dar tantas vueltas y generar una solución más efectiva sin salirnos del marco de GraphQL, ya que este llamado lo hacemos desde un GraphQL End Point. Información del end point rest: ``GET - localhost:5500/api-hostalpaly/v1/email/verify-email/:idUsuario``

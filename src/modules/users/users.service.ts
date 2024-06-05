@@ -92,12 +92,12 @@ export class UsersService {
       
     } catch (error) {
 
-      logger.log(`Ocurrió un error al intentar obtener listado de categorías: ${error}`);
+      logger.log(`Ocurrió un error al intentar obtener listado de usuarios: ${error}`);
       throw CustomError.internalServerError(`${error}`);
       
     } finally {
       
-      logger.log(`Listado de categorías finalizada`);
+      logger.log(`Listado de usuarios finalizada`);
       await this.prisma.$disconnect();
 
     }
@@ -106,6 +106,32 @@ export class UsersService {
 
   findOne(id: number) {
     return `This action returns a #${id} user`;
+  }
+
+  async findOneByEmail(email: string): Promise<User | CustomError> {
+
+    const logger = new Logger('UsersService - findOneByEmail')
+    
+    try {
+
+      const getUser = await this.prisma.tBL_USERS.findFirst({
+        where: { email }
+      });
+
+      return getUser;
+      
+    } catch (error) {
+
+      logger.log(`Ocurrió un error al intentar obtener el usuario: ${error}`);
+      throw CustomError.internalServerError(`${error}`);
+      
+    } finally {
+      
+      logger.log(`Obtención de usuario por ID finalizado`);
+      await this.prisma.$disconnect();
+
+    }
+    
   }
 
   //? Lo llamaremos desde Auth

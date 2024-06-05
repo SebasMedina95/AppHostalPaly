@@ -181,6 +181,7 @@ type Mutation {
   removeCategory(id: Int!): Category!
   blockUser(id: Int!): User!
   signup(signupInput: SignupInput!): AuthResponse!
+  login(loginInput: LoginInput!): AuthResponse!
 }
 
 input CreateComfortInput {
@@ -240,4 +241,9 @@ input SignupInput {
   phone1: String
   phone2: String
   isBlock: Boolean
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }
