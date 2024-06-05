@@ -13,6 +13,7 @@ import { ComfortsModule } from './modules/comforts/comforts.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { EmailVerifyModule } from './modules/auth/api-rest/email-verify.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { AuthModule } from './modules/auth/auth.module';
     CategoriesModule,
     UsersModule,
     AuthModule,
+    EmailVerifyModule
 
   ],
   controllers: [],

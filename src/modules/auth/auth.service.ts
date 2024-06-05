@@ -30,8 +30,14 @@ export class AuthService {
       //* Paso 1. Creo el usuario
       const user = await this.usersService.create(signupInput);
 
+      if( user instanceof CustomError )
+        return CustomError.badRequestError("Ocurrió algún error en el registro de usuario y no podemos proseguir");
+
       //* Paso 2. Envío el Email de confirmación
-      await this.emailService.sendEmailValidationUser();
+      const sendEmail: boolean = await this.emailService.sendEmailValidationUser(user, signupInput);
+      
+      if( !sendEmail )
+        return CustomError.badRequestError("Ocurrió algún error al enviar el email");
 
       //* Paso 3. Genero token (Podría ser opcional, tendrá más sentido en el Login)
       //TODO ...

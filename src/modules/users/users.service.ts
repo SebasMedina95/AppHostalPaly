@@ -1,4 +1,7 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException,
+         Injectable,
+         Logger } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
@@ -43,7 +46,7 @@ export class UsersService {
           names: signupInput.names,
           lastnames: signupInput.lastnames,
           email: signupInput.email,
-          password: signupInput.password,
+          password: bcrypt.hashSync( signupInput.password, 10 ),
           gender: signupInput.gender,
           img: signupInput.img,
           phone1: signupInput.phone1,
