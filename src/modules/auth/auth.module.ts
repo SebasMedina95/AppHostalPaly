@@ -5,10 +5,9 @@ import { JwtModule } from '@nestjs/jwt';
 
 import { AuthService } from './auth.service';
 import { EmailService } from './email/email.service';
-import { EmailVerifyController } from './api-rest/email-verify.controller';
-import { EmailVerifyService } from './api-rest/email-verify.service';
 
 import { PrismaModule } from '../../config/prisma/prisma.module';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 import { AuthResolver } from './auth.resolver';
 import { UsersModule } from '../users/users.module';
@@ -19,6 +18,7 @@ import { EmailVerifyModule } from './api-rest/email-verify.module';
     AuthResolver,
     AuthService,
     EmailService,
+    JwtStrategy,
   ],
   imports: [
 
@@ -40,6 +40,11 @@ import { EmailVerifyModule } from './api-rest/email-verify.module';
     PrismaModule,
     EmailVerifyModule,
     UsersModule //* Para usar lo que tenemos en el usuario
-  ]
+  ],
+  exports: [ 
+    JwtStrategy,
+    PassportModule, 
+    JwtModule 
+  ],
 })
 export class AuthModule {}

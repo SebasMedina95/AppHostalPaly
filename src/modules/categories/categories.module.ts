@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
+
+import { PrismaModule } from '../../config/prisma/prisma.module';
+
+import { Category } from './entities/category.entity';
 import { CategoriesService } from './categories.service';
 import { CategoriesResolver } from './categories.resolver';
-import { Category } from './entities/category.entity';
-import { PrismaModule } from 'src/config/prisma/prisma.module';
 
 @Module({
   providers: [

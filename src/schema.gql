@@ -152,6 +152,7 @@ type Query {
   category(id: Int!): Category!
   users(pageOptionsArgs: PageOptionsArgs!): UserPaginationResponse!
   user(id: Int!): User!
+  revalidate: AuthResponse!
 }
 
 input PageOptionsArgs {

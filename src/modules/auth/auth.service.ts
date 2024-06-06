@@ -1,5 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable,
+         Logger,
+         UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 import { CreateAuthInput } from './dto/inputs/create-auth.input';
 import { UpdateAuthInput } from './dto/inputs/update-auth.input';
@@ -21,7 +24,8 @@ export class AuthService {
   constructor(
       private usersService: UsersService,
       private readonly emailService: EmailService,
-      private prisma: PrismaService
+      private prisma: PrismaService,
+      private readonly jwtService: JwtService,
   ){}
 
   async signup(signupInput: SignupInput): Promise<AuthResponse | CustomError> {
@@ -60,40 +64,104 @@ export class AuthService {
 
   }
 
+  async validateUser( id: number ): Promise<User> {
+
+    const user = await this.usersService.findOneById( id );
+    const getUser = user as User;
+
+    if( !getUser.emailValidated )
+        throw new UnauthorizedException(`El usuario no ha validado su email, si se trata de un error hable con el ADMIN.`);
+
+    if( getUser.isBlock )
+        throw new UnauthorizedException(`El usuario se encuentra bloqueado, si se trata de un error hable con el ADMIN.`);
+
+    delete getUser.password; //No es necesario devolver esto por seguridad
+    return getUser;
+
+  }
+
   async login(loginInput: LoginInput): Promise<AuthResponse | CustomError> {
 
     const logger = new Logger('AuthService - login');
-    const token: string = "ABC123";
     const { email, password } = loginInput;
 
-    //* Paso 1. Verificamos el email
-    const getUserByEmail: User | CustomError = await this.usersService.findOneByEmail( email );
+    try {
 
-    if( !getUserByEmail || getUserByEmail == null || getUserByEmail == undefined )
-      return CustomError.badRequestError("No fue encontrado el email proporcionado");
+      //* Paso 1. Verificamos el email
+      const getUserByEmail: User | CustomError = await this.usersService.findOneByEmail( email );
 
-    //* Paso 2. Verificamos que el email se haya validado
-    const convertUserResponse: User = getUserByEmail as User; //Forzamos porque en este punto ya lo tenemos
-    if( !convertUserResponse.emailValidated )
-      return CustomError.badRequestError("El usuario no ha confirmado su email");
+      if( !getUserByEmail || getUserByEmail == null || getUserByEmail == undefined )
+        return CustomError.badRequestError("No fue encontrado el email proporcionado");
 
-    //* Paso 3. Validamos la contraseña
-    if( !bcrypt.compareSync( password, convertUserResponse.password ) )
-      return CustomError.badRequestError("La contraseña no coincide");
+      //* Paso 2. Verificamos que el email se haya validado
+      const convertUserResponse: User = getUserByEmail as User; //Forzamos porque en este punto ya lo tenemos
+      console.log({convertUserResponse})
+      if( !convertUserResponse.emailValidated )
+        return CustomError.badRequestError("El usuario no ha confirmado su email");
 
-    //* Paso 4. Validamos que el usuario no este bloqueado
-    if( convertUserResponse.isBlock )
-      return CustomError.badRequestError("El usuario esta bloqueado, contacte con el admin");
+      //* Paso 3. Validamos la contraseña
+      if( !bcrypt.compareSync( password, convertUserResponse.password ) )
+        return CustomError.badRequestError("La contraseña no coincide");
 
-    //* Paso 5. Generamos el JWT.
+      //* Paso 4. Validamos que el usuario no este bloqueado
+      if( convertUserResponse.isBlock )
+        return CustomError.badRequestError("El usuario esta bloqueado, contacte con el admin");
 
-    console.log({getUserByEmail});
+      //* Paso 5. Generamos el JWT.
+      const token: string = this.getJwtToken( convertUserResponse.id );
 
-    return {
-      user: getUserByEmail,
-      token: "ABC123"
+      return {
+        user: getUserByEmail,
+        token
+      }
+      
+    } catch (error) {
+
+      logger.log(`Ocurrió un error al intentar logear el usuario: ${error}`);
+      throw CustomError.internalServerError(`${error}`);
+      
+    } finally {
+      
+      logger.log(`Operación de Login Finalizada`);
+      await this.prisma.$disconnect();
+
+    }
+  }
+
+  async revalidateToken( user: User ): Promise<AuthResponse | CustomError> {
+    
+    const logger = new Logger('AuthService - revalidateToken');
+
+    try {
+
+      const getUserById: User | CustomError = await this.usersService.findOneById( user.id );
+
+      if( !getUserById || getUserById == null || getUserById == undefined )
+        return CustomError.badRequestError("No fue encontrado el id proporcionado");
+
+      const token: string = this.getJwtToken( user.id );
+
+      return {
+        user: getUserById,
+        token
+      }
+      
+    } catch (error) {
+
+      logger.log(`Ocurrió un error al intentar revalidar el token de usuario: ${error}`);
+      throw CustomError.internalServerError(`${error}`);
+      
+    } finally {
+      
+      logger.log(`Operación de Revalidación de Token Finalizada`);
+      await this.prisma.$disconnect();
+
     }
 
+  }
+
+  private getJwtToken( userId: number ): string {
+    return this.jwtService.sign({ id: userId });
   }
 
   

@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
+
+import { PrismaModule } from '../../config/prisma/prisma.module';
 import { ComfortsService } from './comforts.service';
 import { ComfortsResolver } from './comforts.resolver';
-import { PrismaModule } from 'src/config/prisma/prisma.module';
+
 import { Comfort } from './entities/comfort.entity';
 
 @Module({

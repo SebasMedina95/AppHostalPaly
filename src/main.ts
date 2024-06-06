@@ -1,5 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import * as csurf from 'csurf';
+
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -21,6 +23,8 @@ async function bootstrap() {
 
   //? Configuración del cors
   app.enableCors();
+
+  // app.use(csurf());
 
   //? Configuración de puerto
   await app.listen( process.env.PORT );

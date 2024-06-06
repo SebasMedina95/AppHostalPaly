@@ -3,12 +3,16 @@ import { Resolver,
          Mutation,
          Args,
          Int } from '@nestjs/graphql';
+
 import { ComfortsService } from './comforts.service';
+
 import { Comfort } from './entities/comfort.entity';
 import { CreateComfortInput } from './dto/inputs/create-comfort.input';
 import { UpdateComfortInput } from './dto/inputs/update-comfort.input';
-import { CustomError } from 'src/helpers/errors/custom.error';
-import { PageOptionsArgs } from 'src/helpers/pagination/dto/page-options.args';
+
+import { CustomError } from '../../helpers/errors/custom.error';
+import { PageOptionsArgs } from '../../helpers/pagination/dto/page-options.args';
+
 import { ComfortPaginationResponse } from './types/pagination-response.type';
 
 @Resolver(() => Comfort)

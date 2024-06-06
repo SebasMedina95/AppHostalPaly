@@ -1,16 +1,18 @@
 import { Injectable,
          Logger } from '@nestjs/common';
 
+import { PrismaService } from 'src/config/prisma/prisma.service';
+
+import { Category } from './entities/category.entity';
 import { CreateCategoryInput } from './dto/inputs/create-category.input';
 import { UpdateCategoryInput } from './dto/inputs/update-category.input';
 
-import { PrismaService } from 'src/config/prisma/prisma.service';
-import { Category } from './entities/category.entity';
-import { CustomError } from 'src/helpers/errors/custom.error';
 
-import { PageOptionsArgs } from 'src/helpers/pagination/dto/page-options.args';
-import { PageMetaInput } from 'src/helpers/pagination/dto/page-meta.input';
-import { PageInput } from 'src/helpers/pagination/dto/page.input';
+import { CustomError } from '../../helpers/errors/custom.error';
+import { PageOptionsArgs } from '../../helpers/pagination/dto/page-options.args';
+import { PageMetaInput } from '../../helpers/pagination/dto/page-meta.input';
+import { PageInput } from '../../helpers/pagination/dto/page.input';
+
 import { CategoryPaginationResponse } from './types/pagination-response.type';
 
 @Injectable()

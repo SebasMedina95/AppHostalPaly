@@ -1,14 +1,28 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver,
+         Query,
+         Mutation,
+         Args  } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+
 import { AuthService } from './auth.service';
+
 import { Auth } from './entities/auth.entity';
+import { User } from '../users/entities/user.entity';
+
 import { CreateAuthInput } from './dto/inputs/create-auth.input';
 import { UpdateAuthInput } from './dto/inputs/update-auth.input';
 import { SignupInput } from './dto/inputs/signup.input';
-import { AuthResponse } from './types/auth-response.type';
-import { CustomError } from '../../helpers/errors/custom.error';
 import { LoginInput } from './dto/inputs/login.input';
 
-@Resolver(() => Auth)
+import { AuthResponse } from './types/auth-response.type';
+
+import { CustomError } from '../../helpers/errors/custom.error';
+import { ValidRoles } from '../../constants/roles.enum';
+
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { CurrentUser } from './decorators/current-user.decorator';
+
+@Resolver(() => AuthResponse)
 export class AuthResolver {
 
   constructor(
@@ -49,14 +63,16 @@ export class AuthResolver {
 
   // }
 
-  // @Query()
-  // revalidateToken(): Promise<any> {
+  @Query( () => AuthResponse, { name: "revalidate" } )
+  @UseGuards( JwtAuthGuard ) //? El JwtAuthGuard es mi Guard personalizado para GraphQL
+  async revalidateToken(
+    @CurrentUser([
+      ValidRoles.ADMIN
+    ]) user: User
+  ): Promise<AuthResponse | CustomError> {
 
-  //   // return this.authService.revalidateToken();
-  //   return null;
+    return this.authService.revalidateToken(user);
 
-  // }
-
-  
+  }
 
 }

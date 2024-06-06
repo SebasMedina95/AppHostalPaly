@@ -2,16 +2,16 @@ import { Resolver,
          Query,
          Mutation,
          Args,
-         Int, 
-         ID} from '@nestjs/graphql';
+         Int } from '@nestjs/graphql';
 import { CategoriesService } from './categories.service';
 import { Category } from './entities/category.entity';
 
 import { CreateCategoryInput } from './dto/inputs/create-category.input';
 import { UpdateCategoryInput } from './dto/inputs/update-category.input';
-import { CustomError } from 'src/helpers/errors/custom.error';
-import { PageOptionsArgs } from 'src/helpers/pagination/dto/page-options.args';
-import { PageInput } from 'src/helpers/pagination/dto/page.input';
+
+import { CustomError } from '../../helpers/errors/custom.error';
+import { PageOptionsArgs } from '../../helpers/pagination/dto/page-options.args';
+
 import { CategoryPaginationResponse } from './types/pagination-response.type';
 
 @Resolver(() => Category)
