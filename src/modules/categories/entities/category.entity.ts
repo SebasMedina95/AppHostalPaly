@@ -24,14 +24,14 @@ export class Category {
   @Field( () => Int, { description: "Cantidad de Reservaciones - Popularidad" })
   populate: number;
 
-  @Field( () => String, { description: "Documento del usuario que registra" })
-  userDocumentCreateAt: string;
+  @Field( () => String, { description: "Email del usuario que registra" })
+  userCreateAt: string;
 
   @Field( () => Date, { description: "Fecha de Registro" })
   createDateAt: Date;
 
-  @Field( () => String, { description: "Documento del usuario que actualiza" })
-  userDocumentUpdateAt: string;
+  @Field( () => String, { description: "Email del usuario que actualiza" })
+  userUpdateAt: string;
 
   @Field( () => Date, { description: "Fecha de Actuaización" })
   updateDateAt: Date;

@@ -24,14 +24,14 @@ type Comfort {
   """Estado de la comodidad"""
   status: Boolean!
 
-  """Documento del usuario que registra"""
-  userDocumentCreateAt: String!
+  """Email del usuario que registra"""
+  userCreateAt: String!
 
   """Fecha de Registro"""
   createDateAt: DateTime!
 
-  """Documento del usuario que actualiza"""
-  userDocumentUpdateAt: String!
+  """Email del usuario que actualiza"""
+  userUpdateAt: String!
 
   """Fecha de Actuaización"""
   updateDateAt: DateTime!
@@ -66,14 +66,14 @@ type Category {
   """Cantidad de Reservaciones - Popularidad"""
   populate: Int!
 
-  """Documento del usuario que registra"""
-  userDocumentCreateAt: String!
+  """Email del usuario que registra"""
+  userCreateAt: String!
 
   """Fecha de Registro"""
   createDateAt: DateTime!
 
-  """Documento del usuario que actualiza"""
-  userDocumentUpdateAt: String!
+  """Email del usuario que actualiza"""
+  userUpdateAt: String!
 
   """Fecha de Actuaización"""
   updateDateAt: DateTime!
@@ -117,6 +117,9 @@ type User {
 
   """Estado del usuario"""
   isBlock: Boolean!
+
+  """Email de usuario que bloqueó"""
+  userWhoBlock: String!
 }
 
 type UserPaginationResponse {
@@ -151,7 +154,6 @@ type Query {
   """Obtener categoría por ID"""
   category(id: Int!): Category!
   users(pageOptionsArgs: PageOptionsArgs!): UserPaginationResponse!
-  user(id: Int!): User!
   revalidate: AuthResponse!
 }
 
@@ -189,9 +191,9 @@ input CreateComfortInput {
   name: String!
   description: String!
   status: Boolean
-  userDocumentCreateAt: String
+  userCreateAt: String
   createDateAt: DateTime
-  userDocumentUpdateAt: String
+  userUpdateAt: String
   updateDateAt: DateTime
 }
 
@@ -199,9 +201,9 @@ input UpdateComfortInput {
   name: String
   description: String
   status: Boolean
-  userDocumentCreateAt: String
+  userCreateAt: String
   createDateAt: DateTime
-  userDocumentUpdateAt: String
+  userUpdateAt: String
   updateDateAt: DateTime
   id: Int!
 }
@@ -212,9 +214,9 @@ input CreateCategoryInput {
   theme: String!
   status: Boolean
   populate: Int
-  userDocumentCreateAt: String
+  userCreateAt: String
   createDateAt: DateTime
-  userDocumentUpdateAt: String
+  userUpdateAt: String
   updateDateAt: DateTime
 }
 
@@ -224,9 +226,9 @@ input UpdateCategoryInput {
   theme: String
   status: Boolean
   populate: Int
-  userDocumentCreateAt: String
+  userCreateAt: String
   createDateAt: DateTime
-  userDocumentUpdateAt: String
+  userUpdateAt: String
   updateDateAt: DateTime
   id: Int!
 }

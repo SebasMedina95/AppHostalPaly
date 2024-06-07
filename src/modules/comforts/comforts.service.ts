@@ -43,9 +43,9 @@ export class ComfortsService {
         data: {
           name,
           description,
-          userDocumentCreateAt: "123456789",
+          userCreateAt: "123456789",
           createDateAt: new Date(),
-          userDocumentUpdateAt: "123456789",
+          userUpdateAt: "123456789",
           updateDateAt: new Date(),
         }
       });
@@ -217,7 +217,7 @@ export class ComfortsService {
         data: {
           name,
           description,
-          userDocumentUpdateAt: "123456789",
+          userUpdateAt: "123456789",
           updateDateAt: new Date(),
         }
       });

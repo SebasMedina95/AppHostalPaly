@@ -14,6 +14,8 @@ import { CustomError } from '../../helpers/errors/custom.error';
 import { User } from './entities/user.entity';
 
 import { PrismaService } from '../../config/prisma/prisma.service';
+import { PageMetaInput } from 'src/helpers/pagination/dto/page-meta.input';
+import { PageInput } from 'src/helpers/pagination/dto/page.input';
 
 @Injectable()
 export class UsersService {
@@ -77,18 +79,68 @@ export class UsersService {
 
     const logger = new Logger('UsersService - findAll')
     const { take, page, search, order } = pageOptionsArgs;
-    let getCategories: User[] = [];
+    let getUsers: User[] = [];
     let itemCount: number = 0;
 
     try {
 
       if( search && search !== "" && search !== null && search !== undefined  ){
 
-        //TODO
+        getUsers = await this.prisma.tBL_USERS.findMany({
+          take,
+          skip: Number(page - 1) * take,
+          where: {
+              OR: [
+                  { names: { contains: search, mode: 'insensitive' } },
+                  { lastnames: { contains: search, mode: 'insensitive' } },
+                  { email: { contains: search, mode: 'insensitive' } },
+                  { phone1: { contains: search, mode: 'insensitive' } },
+                  { phone2: { contains: search, mode: 'insensitive' } },
+              ],
+              AND: [
+                  { isBlock: false }
+              ]
+          },
+          orderBy: { id: order }
+        });
+
+        itemCount = await this.prisma.tBL_USERS.count({
+          where: {
+            OR: [
+                { names: { contains: search, mode: 'insensitive' } },
+                { lastnames: { contains: search, mode: 'insensitive' } },
+                { email: { contains: search, mode: 'insensitive' } },
+                { phone1: { contains: search, mode: 'insensitive' } },
+                { phone2: { contains: search, mode: 'insensitive' } },
+            ],
+            AND: [
+                { isBlock: false }
+            ]
+          },
+        });
+
+      }else{
+
+        getUsers = await this.prisma.tBL_USERS.findMany({
+          take,
+          skip: Number(page - 1) * take,
+          where: {  isBlock: false },
+          orderBy: { id: order }
+        });
+
+        itemCount = await this.prisma.tBL_USERS.count({
+          where: { isBlock: false },
+        });
 
       }
 
-      return null;
+      const pageMetaDto = new PageMetaInput({ itemCount, pageOptionsArgs });
+      const finalResult = new PageInput(getUsers, pageMetaDto)
+
+      return {
+        data: getUsers,
+        meta: pageMetaDto
+      };
       
     } catch (error) {
 
@@ -157,11 +209,46 @@ export class UsersService {
   }
 
   //? Lo llamaremos desde Auth
+  //? Nos apoyaremos para actualizar el password
+  //? Nos apoyaremos para actualizar el avatar
   update(id: number, updateUserInput: UpdateUserInput) {
     return `This action updates a #${id} user`;
   }
 
-  block(id: number) {
-    return `This action removes a #${id} user`;
+  async block(id: number): Promise<User | CustomError> {
+
+    const logger = new Logger('UsersService - block')
+    
+    try {
+
+      //Verificación del ID
+      const existUser = await this.prisma.tBL_USERS.findFirst({
+        where: { id }
+      });
+
+      if( existUser == null ) return CustomError.notFoundError(`No se encontró usuario con el ID ${id}`);
+
+      const blockUser = await this.prisma.tBL_USERS.update({
+        where: { id },
+        data: {
+          isBlock: true,
+          userWhoBlock: "123456789",
+        }
+      });
+
+      return blockUser;
+      
+    } catch (error) {
+
+      logger.log(`Ocurrió un error al intentar obtener el usuario: ${error}`);
+      throw CustomError.internalServerError(`${error}`);
+      
+    } finally {
+      
+      logger.log(`Obtención de usuario por ID finalizado`);
+      await this.prisma.$disconnect();
+
+    }
+    
   }
 }

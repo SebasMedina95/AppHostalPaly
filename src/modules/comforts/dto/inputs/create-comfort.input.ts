@@ -33,7 +33,7 @@ export class CreateComfortInput {
   @MinLength(6)
   @IsOptional()
   @Field(() => String, { nullable: true })
-  userDocumentCreateAt: string;
+  userCreateAt: string;
 
   @IsDate()
   @IsOptional()
@@ -44,7 +44,7 @@ export class CreateComfortInput {
   @MinLength(6)
   @IsOptional()
   @Field(() => String, { nullable: true })
-  userDocumentUpdateAt: string;
+  userUpdateAt: string;
 
   @IsDate()
   @IsOptional()

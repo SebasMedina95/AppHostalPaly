@@ -24,27 +24,30 @@ datasource db {
 // }
 
 model TBL_CATEGORIES {
-  id                   Int       @id @default(autoincrement())
-  name                 String    @unique @db.VarChar(150)
-  description          String    @unique @db.VarChar(5000)
-  theme                String?
-  status               Boolean   @default(true)
-  populate             Int       @default(0)
-  userDocumentCreateAt String?
-  createDateAt         DateTime?
-  userDocumentUpdateAt String?
-  updateDateAt         DateTime?
+  id                          Int                           @id @default(autoincrement())
+  name                        String                        @unique @db.VarChar(150)
+  description                 String                        @unique @db.VarChar(5000)
+  theme                       String?
+  status                      Boolean                       @default(true)
+  populate                    Int                           @default(0)
+  userCreateAt        String?
+  createDateAt                DateTime?
+  userUpdateAt        String?
+  updateDateAt                DateTime?
+  TBL_ROOMS                   TBL_ROOMS[]
+  TBL_DTL_COMFORTS_CATEGORIES TBL_DTL_COMFORTS_CATEGORIES[]
 }
 
 model TBL_COMFORTS {
-  id                   Int       @id @default(autoincrement())
-  name                 String    @unique @db.VarChar(150)
-  description          String    @unique @db.VarChar(500)
-  status               Boolean   @default(true)
-  userDocumentCreateAt String?
-  createDateAt         DateTime?
-  userDocumentUpdateAt String?
-  updateDateAt         DateTime?
+  id                          Int                           @id @default(autoincrement())
+  name                        String                        @unique @db.VarChar(150)
+  description                 String                        @unique @db.VarChar(500)
+  status                      Boolean                       @default(true)
+  userCreateAt                String?
+  createDateAt                DateTime?
+  userUpdateAt                String?
+  updateDateAt                DateTime?
+  TBL_DTL_COMFORTS_CATEGORIES TBL_DTL_COMFORTS_CATEGORIES[]
 }
 
 model TBL_USERS {
@@ -60,4 +63,29 @@ model TBL_USERS {
   phone1         String?
   phone2         String?
   isBlock        Boolean  @default(false)
+  userWhoBlock   String?
+}
+
+model TBL_ROOMS {
+  id           Int       @id @default(autoincrement())
+  name         String    @unique @db.VarChar(25)
+  maintenance  Boolean   @default(false)
+  description  String?   @db.VarChar(5000)
+  userCreateAt String?
+  createDateAt DateTime?
+  userUpdateAt String?
+  updateDateAt DateTime?
+
+  category   TBL_CATEGORIES @relation(fields: [categoryId], references: [id])
+  categoryId Int
+}
+
+model TBL_DTL_COMFORTS_CATEGORIES {
+  id           Int            @id @default(autoincrement())
+  userCreateAt String?
+  createDateAt DateTime?
+  category     TBL_CATEGORIES @relation(fields: [categoryId], references: [id])
+  categoryId   Int
+  comfort      TBL_COMFORTS   @relation(fields: [comfortId], references: [id])
+  comfortId    Int
 }

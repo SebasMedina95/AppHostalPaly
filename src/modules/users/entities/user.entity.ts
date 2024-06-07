@@ -41,5 +41,8 @@ export class User {
 
   @Field( () => Boolean, { description: "Estado del usuario" })
   isBlock: boolean;
+  
+  @Field( () => String, { description: "Email de usuario que bloqueó" })
+  userWhoBlock?: string;
 
 }

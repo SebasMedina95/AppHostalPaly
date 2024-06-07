@@ -45,9 +45,9 @@ export class CategoriesService {
           name,
           description,
           theme,
-          userDocumentCreateAt: "123456789",
+          userCreateAt: "123456789",
           createDateAt: new Date(),
-          userDocumentUpdateAt: "123456789",
+          userUpdateAt: "123456789",
           updateDateAt: new Date(),
         }
       })
@@ -221,7 +221,7 @@ export class CategoriesService {
           name,
           description,
           theme,
-          userDocumentUpdateAt: "123456789",
+          userUpdateAt: "123456789",
           updateDateAt: new Date(),
         }
       });

@@ -30,20 +30,19 @@ export class UsersResolver {
     @Args('pageOptionsArgs') pageOptionsArgs: PageOptionsArgs
   ): Promise<UserPaginationResponse> {
 
-    throw new Error("Método no implementado");
-    // return this.usersService.findAll(pageOptionsArgs);
+    return this.usersService.findAll(pageOptionsArgs);
 
   }
 
-  @Query(() => User, { name: 'user' })
-  async findOne(
-    @Args('id', { type: () => Int }) id: number
-  ): Promise<User | CustomError> {
+  // @Query(() => User, { name: 'user' })
+  // async findOne(
+  //   @Args('id', { type: () => Int }) id: number
+  // ): Promise<User | CustomError> {
 
-    throw new Error("Método no implementado");
-    // return this.usersService.findOne(id);
+  //   throw new Error("Método no implementado");
+  //   // return this.usersService.findOne(id);
 
-  }
+  // }
 
   //? Lo manejaremos en el módulo de Auth
   // @Mutation(() => User)

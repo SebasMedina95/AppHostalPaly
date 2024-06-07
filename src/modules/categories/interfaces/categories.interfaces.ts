@@ -6,8 +6,8 @@ export interface ICategories {
     theme: string;
     status: boolean;
     populate : number;
-    userDocumentCreateAt?: string;
+    userCreateAt?: string;
     createDateAt: Date;
-    userDocumentUpdateAt?: string;
+    userUpdateAt?: string;
     updateDateAt: Date;
 }
