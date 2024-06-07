@@ -22,7 +22,6 @@ export const CurrentUser = createParamDecorator(
    
    for ( const role of user.roles ) {
 
-        //TODO -> Organizar el ValidRoles
        if ( roles.includes( role as ValidRoles ) ) {
            return user;
        }

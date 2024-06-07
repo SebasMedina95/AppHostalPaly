@@ -3,8 +3,8 @@ import { BadRequestException,
          Logger } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
-import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
+import { CreateUserInput } from './dto/inputs/create-user.input';
+import { UpdateUserInput } from './dto/inputs/update-user.input';
 import { SignupInput } from '../auth/dto/inputs/signup.input';
 
 import { PageOptionsArgs } from '../../helpers/pagination/dto/page-options.args';
@@ -96,6 +96,7 @@ export class UsersService {
                   { email: { contains: search, mode: 'insensitive' } },
                   { phone1: { contains: search, mode: 'insensitive' } },
                   { phone2: { contains: search, mode: 'insensitive' } },
+                  { roles: { has: search } }
               ],
               AND: [
                   { isBlock: false }
@@ -112,6 +113,7 @@ export class UsersService {
                 { email: { contains: search, mode: 'insensitive' } },
                 { phone1: { contains: search, mode: 'insensitive' } },
                 { phone2: { contains: search, mode: 'insensitive' } },
+                { roles: { has: search } }
             ],
             AND: [
                 { isBlock: false }

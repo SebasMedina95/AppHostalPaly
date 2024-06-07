@@ -42,8 +42,56 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type User {
+  """Id autoincrementado para la PK"""
+  id: ID!
+
+  """Nombres del usuario"""
+  names: String!
+
+  """Apellidos del usuario"""
+  lastnames: String!
+
+  """Email del usuario"""
+  email: String!
+
+  """Email validado del usuario"""
+  emailValidated: Boolean!
+
+  """Roles del usuario"""
+  roles: [String!]!
+
+  """Sexo del usuario"""
+  gender: String!
+
+  """Avatar del usuario"""
+  img: String
+
+  """Teléfono 1 del usuario"""
+  phone1: String
+
+  """Teléfono 2 del usuario"""
+  phone2: String
+
+  """Estado del usuario"""
+  isBlock: Boolean!
+
+  """Email de usuario que bloqueó"""
+  userWhoBlock: String
+}
+
 type ComfortPaginationResponse {
   data: [Comfort!]!
+  meta: PageMetaInput!
+}
+
+type AuthResponse {
+  user: User!
+  token: String!
+}
+
+type UserPaginationResponse {
+  data: [User!]!
   meta: PageMetaInput!
 }
 
@@ -84,54 +132,6 @@ type CategoryPaginationResponse {
   meta: PageMetaInput!
 }
 
-type User {
-  """Id autoincrementado para la PK"""
-  id: ID!
-
-  """Nombres del usuario"""
-  names: String!
-
-  """Apellidos del usuario"""
-  lastnames: String!
-
-  """Email del usuario"""
-  email: String!
-
-  """Email validado del usuario"""
-  emailValidated: Boolean!
-
-  """Roles del usuario"""
-  roles: [String!]!
-
-  """Sexo del usuario"""
-  gender: String!
-
-  """Avatar del usuario"""
-  img: String
-
-  """Teléfono 1 del usuario"""
-  phone1: String
-
-  """Teléfono 2 del usuario"""
-  phone2: String
-
-  """Estado del usuario"""
-  isBlock: Boolean!
-
-  """Email de usuario que bloqueó"""
-  userWhoBlock: String!
-}
-
-type UserPaginationResponse {
-  data: [User!]!
-  meta: PageMetaInput!
-}
-
-type AuthResponse {
-  user: User!
-  token: String!
-}
-
 type Query {
   """Método inicial para las configuraciones GraphQL"""
   hello: String!
@@ -147,14 +147,14 @@ type Query {
 
   """Obtener comodidad por ID"""
   comfort(id: Int!): Comfort!
+  revalidate: AuthResponse!
+  users(pageOptionsArgs: PageOptionsArgs!): UserPaginationResponse!
 
   """Listar categorías con paginación y filtro"""
   categories(pageOptionsArgs: PageOptionsArgs!): CategoryPaginationResponse!
 
   """Obtener categoría por ID"""
   category(id: Int!): Category!
-  users(pageOptionsArgs: PageOptionsArgs!): UserPaginationResponse!
-  revalidate: AuthResponse!
 }
 
 input PageOptionsArgs {
@@ -173,6 +173,9 @@ type Mutation {
 
   """Eliminar lógicamente una comodidad"""
   removeComfort(id: Int!): Comfort!
+  signup(signupInput: SignupInput!): AuthResponse!
+  login(loginInput: LoginInput!): AuthResponse!
+  blockUser(id: Int!): User!
 
   """Crear una nueva categoría"""
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
@@ -182,9 +185,6 @@ type Mutation {
 
   """Eliminar lógicamente una categoría"""
   removeCategory(id: Int!): Category!
-  blockUser(id: Int!): User!
-  signup(signupInput: SignupInput!): AuthResponse!
-  login(loginInput: LoginInput!): AuthResponse!
 }
 
 input CreateComfortInput {
@@ -206,6 +206,24 @@ input UpdateComfortInput {
   userUpdateAt: String
   updateDateAt: DateTime
   id: Int!
+}
+
+input SignupInput {
+  names: String!
+  lastnames: String!
+  email: String!
+  password: String!
+  passwordConfirm: String!
+  gender: String!
+  img: String
+  phone1: String
+  phone2: String
+  isBlock: Boolean
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }
 
 input CreateCategoryInput {
@@ -231,22 +249,4 @@ input UpdateCategoryInput {
   userUpdateAt: String
   updateDateAt: DateTime
   id: Int!
-}
-
-input SignupInput {
-  names: String!
-  lastnames: String!
-  email: String!
-  password: String!
-  passwordConfirm: String!
-  gender: String!
-  img: String
-  phone1: String
-  phone2: String
-  isBlock: Boolean
-}
-
-input LoginInput {
-  email: String!
-  password: String!
 }

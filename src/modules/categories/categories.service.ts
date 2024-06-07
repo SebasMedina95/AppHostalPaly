@@ -4,9 +4,10 @@ import { Injectable,
 import { PrismaService } from 'src/config/prisma/prisma.service';
 
 import { Category } from './entities/category.entity';
+import { User } from '../users/entities/user.entity';
+
 import { CreateCategoryInput } from './dto/inputs/create-category.input';
 import { UpdateCategoryInput } from './dto/inputs/update-category.input';
-
 
 import { CustomError } from '../../helpers/errors/custom.error';
 import { PageOptionsArgs } from '../../helpers/pagination/dto/page-options.args';
@@ -22,7 +23,7 @@ export class CategoriesService {
     private prisma: PrismaService
   ){}
 
-  async create(createCategoryInput: CreateCategoryInput): Promise<Category | CustomError> {
+  async create(createCategoryInput: CreateCategoryInput, user: User): Promise<Category | CustomError> {
 
     const logger = new Logger('CategoriesService - create')
     const { name, description, theme } = createCategoryInput;
@@ -45,9 +46,9 @@ export class CategoriesService {
           name,
           description,
           theme,
-          userCreateAt: "123456789",
+          userCreateAt: user.email,
           createDateAt: new Date(),
-          userUpdateAt: "123456789",
+          userUpdateAt: user.email,
           updateDateAt: new Date(),
         }
       })
@@ -67,7 +68,6 @@ export class CategoriesService {
     }
 
   }
-
 
   async findAll(
     pageOptionsArgs: PageOptionsArgs
@@ -183,7 +183,8 @@ export class CategoriesService {
 
   async update(
     id: number, 
-    updateCategoryInput: UpdateCategoryInput
+    updateCategoryInput: UpdateCategoryInput,
+    user: User
   ): Promise<Category | CustomError> {
 
     const logger = new Logger('CategoriesService - update');
@@ -221,7 +222,7 @@ export class CategoriesService {
           name,
           description,
           theme,
-          userUpdateAt: "123456789",
+          userUpdateAt: user.email,
           updateDateAt: new Date(),
         }
       });
@@ -242,7 +243,7 @@ export class CategoriesService {
 
   }
 
-  async remove(id: number): Promise<Category | CustomError> {
+  async remove(id: number, user: User): Promise<Category | CustomError> {
 
     const logger = new Logger('CategoriesService - remove');
 
@@ -257,7 +258,11 @@ export class CategoriesService {
 
       const updateCategory = await this.prisma.tBL_CATEGORIES.update({
         where: { id },
-        data: { status: false }
+        data: {
+          userUpdateAt: user.email,
+          updateDateAt: new Date(), 
+          status: false 
+        }
       });
 
       return updateCategory;

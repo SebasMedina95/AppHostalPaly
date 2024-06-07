@@ -3,6 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/config/prisma/prisma.service';
 
 import { Comfort } from './entities/comfort.entity';
+import { User } from '../users/entities/user.entity';
 import { CreateComfortInput } from './dto/inputs/create-comfort.input';
 import { UpdateComfortInput } from './dto/inputs/update-comfort.input';
 
@@ -21,7 +22,7 @@ export class ComfortsService {
   ){}
 
 
-  async create(createComfortInput: CreateComfortInput) {
+  async create(createComfortInput: CreateComfortInput, user: User) {
     
     const logger = new Logger('ComfortsService - create');
     const { name, description } = createComfortInput;
@@ -43,9 +44,9 @@ export class ComfortsService {
         data: {
           name,
           description,
-          userCreateAt: "123456789",
+          userCreateAt: user.email,
           createDateAt: new Date(),
-          userUpdateAt: "123456789",
+          userUpdateAt: user.email,
           updateDateAt: new Date(),
         }
       });
@@ -180,7 +181,8 @@ export class ComfortsService {
 
   async update(
     id: number, 
-    updateComfortInput: UpdateComfortInput
+    updateComfortInput: UpdateComfortInput,
+    user: User
   ): Promise<Comfort | CustomError> {
     
     const logger = new Logger('ComfortsService - update');
@@ -217,7 +219,7 @@ export class ComfortsService {
         data: {
           name,
           description,
-          userUpdateAt: "123456789",
+          userUpdateAt: user.email,
           updateDateAt: new Date(),
         }
       });
@@ -239,7 +241,8 @@ export class ComfortsService {
   }
 
   async remove(
-    id: number
+    id: number,
+    user: User
   ): Promise<Comfort | CustomError> {
 
     const logger = new Logger('ComfortsService - remove');
@@ -255,7 +258,11 @@ export class ComfortsService {
 
       const updateComfort = await this.prisma.tBL_COMFORTS.update({
         where: { id },
-        data: { status: false }
+        data: { 
+          userUpdateAt: user.email,
+          updateDateAt: new Date(),
+          status: false
+        }
       });
 
       return updateComfort;

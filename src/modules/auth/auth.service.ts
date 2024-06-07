@@ -95,7 +95,6 @@ export class AuthService {
 
       //* Paso 2. Verificamos que el email se haya validado
       const convertUserResponse: User = getUserByEmail as User; //Forzamos porque en este punto ya lo tenemos
-      console.log({convertUserResponse})
       if( !convertUserResponse.emailValidated )
         return CustomError.badRequestError("El usuario no ha confirmado su email");
 

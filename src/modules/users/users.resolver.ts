@@ -1,3 +1,4 @@
+import { UseGuards } from '@nestjs/common';
 import { Resolver,
          Query,
          Mutation,
@@ -7,15 +8,20 @@ import { Resolver,
 import { UsersService } from './users.service';
 
 import { User } from './entities/user.entity';
-import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
+import { CreateUserInput } from './dto/inputs/create-user.input';
+import { UpdateUserInput } from './dto/inputs/update-user.input';
 
 import { PageOptionsArgs } from '../../helpers/pagination/dto/page-options.args';
 import { CustomError } from '../../helpers/errors/custom.error';
+import { ValidRoles } from '../../constants/roles.enum';
 
 import { UserPaginationResponse } from './types/pagination-response.type';
 
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+
 @Resolver(() => User)
+@UseGuards( JwtAuthGuard ) //? El JwtAuthGuard es mi Guard personalizado para GraphQL
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
@@ -27,22 +33,13 @@ export class UsersResolver {
 
   @Query(() => UserPaginationResponse, { name: 'users' })
   async findAll(
-    @Args('pageOptionsArgs') pageOptionsArgs: PageOptionsArgs
+    @Args('pageOptionsArgs') pageOptionsArgs: PageOptionsArgs,
+    @CurrentUser([ ValidRoles.ADMIN ]) user: User
   ): Promise<UserPaginationResponse> {
 
     return this.usersService.findAll(pageOptionsArgs);
 
   }
-
-  // @Query(() => User, { name: 'user' })
-  // async findOne(
-  //   @Args('id', { type: () => Int }) id: number
-  // ): Promise<User | CustomError> {
-
-  //   throw new Error("Método no implementado");
-  //   // return this.usersService.findOne(id);
-
-  // }
 
   //? Lo manejaremos en el módulo de Auth
   // @Mutation(() => User)
@@ -57,11 +54,11 @@ export class UsersResolver {
 
   @Mutation(() => User)
   blockUser(
-    @Args('id', { type: () => Int }) id: number
+    @Args('id', { type: () => Int }) id: number,
+    @CurrentUser([ ValidRoles.ADMIN ]) user: User
   ): Promise<User | CustomError> {
 
-    throw new Error("Método no implementado");
-    // return this.usersService.block(id);
+    return this.usersService.block(id);
 
   }
 }

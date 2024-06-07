@@ -5,6 +5,7 @@ import { PrismaModule } from '../../config/prisma/prisma.module';
 import { Category } from './entities/category.entity';
 import { CategoriesService } from './categories.service';
 import { CategoriesResolver } from './categories.resolver';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   providers: [
@@ -12,6 +13,7 @@ import { CategoriesResolver } from './categories.resolver';
     CategoriesService
   ],
   imports: [
+    AuthModule,
     PrismaModule,
     Category
   ]
