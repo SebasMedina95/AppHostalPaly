@@ -127,9 +127,41 @@ type Category {
   updateDateAt: DateTime!
 }
 
+type ComfortsForCategory {
+  """Id autoincrementado para la PK"""
+  id: ID!
+
+  """Id de la categoría"""
+  categoryId: Int!
+
+  """Id de la comodidad"""
+  comfortId: Int!
+
+  """Email del usuario que registra"""
+  userCreateAt: String!
+
+  """Fecha de Registro"""
+  createDateAt: DateTime!
+}
+
+type BuildListResponse {
+  getCategories: Category!
+  arrayComforts: [Comfort!]!
+}
+
 type CategoryPaginationResponse {
-  data: [Category!]!
+  data: [BuildListResponse!]!
   meta: PageMetaInput!
+}
+
+type CategoryResponse {
+  category: Category!
+  comfortsList: [ComfortsForCategory!]!
+}
+
+type CategoryResponseWithComforts {
+  category: Category!
+  comfortsList: [Comfort!]!
 }
 
 type Query {
@@ -154,7 +186,7 @@ type Query {
   categories(pageOptionsArgs: PageOptionsArgs!): CategoryPaginationResponse!
 
   """Obtener categoría por ID"""
-  category(id: Int!): Category!
+  category(id: Int!): CategoryResponseWithComforts!
 }
 
 input PageOptionsArgs {
@@ -178,10 +210,10 @@ type Mutation {
   blockUser(id: Int!): User!
 
   """Crear una nueva categoría"""
-  createCategory(createCategoryInput: CreateCategoryInput!): Category!
+  createCategory(createCategoryInput: CreateCategoryInput!): CategoryResponse!
 
   """Actualizar una categoría"""
-  updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
+  updateCategory(updateCategoryInput: UpdateCategoryInput!): CategoryResponse!
 
   """Eliminar lógicamente una categoría"""
   removeCategory(id: Int!): Category!
@@ -236,6 +268,7 @@ input CreateCategoryInput {
   createDateAt: DateTime
   userUpdateAt: String
   updateDateAt: DateTime
+  comfortsList: [Int!]
 }
 
 input UpdateCategoryInput {
@@ -248,5 +281,6 @@ input UpdateCategoryInput {
   createDateAt: DateTime
   userUpdateAt: String
   updateDateAt: DateTime
+  comfortsList: [Int!]
   id: Int!
 }

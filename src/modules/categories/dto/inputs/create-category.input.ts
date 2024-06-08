@@ -1,7 +1,7 @@
 import { InputType,
          Int,
          Field } from '@nestjs/graphql';
-import { IsDate,
+import { IsArray, IsDate,
          IsIn,
          IsNotEmpty,
          IsNumber,
@@ -33,6 +33,7 @@ export class CreateCategoryInput {
     "Caribe",
     "Suite",
     "Familiar",
+    "Matrimonial",
     "Estandar",
     "Hospedaje",
   ], { message: "La temática debe ser una opción válida" })
@@ -70,5 +71,11 @@ export class CreateCategoryInput {
   @IsOptional()
   @Field( () => Date, { nullable: true } )
   updateDateAt: Date;
+
+  @IsArray()
+  @IsOptional()
+  @Field( () => [Int], { nullable: true } )
+  comfortsList: number[]; //PKs de las Comodidades
+
 
 }

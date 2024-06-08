@@ -3,6 +3,8 @@ import { Module } from '@nestjs/common';
 import { PrismaModule } from '../../config/prisma/prisma.module';
 
 import { Category } from './entities/category.entity';
+import { ComfortsForCategory } from './entities/comforts-of-category.entity';
+
 import { CategoriesService } from './categories.service';
 import { CategoriesResolver } from './categories.resolver';
 import { AuthModule } from '../auth/auth.module';
@@ -15,7 +17,8 @@ import { AuthModule } from '../auth/auth.module';
   imports: [
     AuthModule,
     PrismaModule,
-    Category
+    Category,
+    ComfortsForCategory
   ]
 })
 export class CategoriesModule {}

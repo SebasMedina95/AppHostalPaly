@@ -14,6 +14,7 @@ import { CategoriesModule } from './modules/categories/categories.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { EmailVerifyModule } from './modules/auth/api-rest/email-verify.module';
+import { RoomsModule } from './modules/rooms/rooms.module';
 
 @Module({
   imports: [
@@ -44,7 +45,8 @@ import { EmailVerifyModule } from './modules/auth/api-rest/email-verify.module';
     CategoriesModule,
     UsersModule,
     AuthModule,
-    EmailVerifyModule
+    EmailVerifyModule,
+    RoomsModule
 
   ],
   controllers: [],

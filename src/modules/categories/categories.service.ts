@@ -5,6 +5,8 @@ import { PrismaService } from 'src/config/prisma/prisma.service';
 
 import { Category } from './entities/category.entity';
 import { User } from '../users/entities/user.entity';
+import { ComfortsForCategory } from './entities/comforts-of-category.entity';
+import { Comfort } from '../comforts/entities/comfort.entity';
 
 import { CreateCategoryInput } from './dto/inputs/create-category.input';
 import { UpdateCategoryInput } from './dto/inputs/update-category.input';
@@ -14,7 +16,10 @@ import { PageOptionsArgs } from '../../helpers/pagination/dto/page-options.args'
 import { PageMetaInput } from '../../helpers/pagination/dto/page-meta.input';
 import { PageInput } from '../../helpers/pagination/dto/page.input';
 
-import { CategoryPaginationResponse } from './types/pagination-response.type';
+import { BuildListResponse,
+         CategoryPaginationResponse } from './types/pagination-response.type';
+import { CategoryResponse, 
+         CategoryResponseWithComforts } from './types/create-update-response.type';
 
 @Injectable()
 export class CategoriesService {
@@ -23,7 +28,7 @@ export class CategoriesService {
     private prisma: PrismaService
   ){}
 
-  async create(createCategoryInput: CreateCategoryInput, user: User): Promise<Category | CustomError> {
+  async create(createCategoryInput: CreateCategoryInput, user: User): Promise<CategoryResponse | CustomError> {
 
     const logger = new Logger('CategoriesService - create')
     const { name, description, theme } = createCategoryInput;
@@ -53,7 +58,31 @@ export class CategoriesService {
         }
       })
 
-      return newCategory;
+      //Si dado el caso vamos a registrar las comodidades de una vez ...
+      let arrayComfortsForCategory: ComfortsForCategory[] = [];
+      if( createCategoryInput.comfortsList && createCategoryInput.comfortsList != null ){
+
+        for (const iter of createCategoryInput.comfortsList) {
+          
+          const createComforts = await this.prisma.tBL_DTL_COMFORTS_CATEGORIES.create({
+            data: {
+              userCreateAt: user.email,
+              createDateAt: new Date(),
+              categoryId: newCategory.id,
+              comfortId: iter
+            }
+          });
+
+          arrayComfortsForCategory.push(createComforts);
+
+        }  
+
+      }
+
+      return {
+        category: newCategory,
+        comfortsList: arrayComfortsForCategory
+      };
       
     } catch (error) {
 
@@ -116,6 +145,13 @@ export class CategoriesService {
         getCategories = await this.prisma.tBL_CATEGORIES.findMany({
           take,
           skip: Number(page - 1) * take,
+          include: {
+            TBL_DTL_COMFORTS_CATEGORIES: {
+              include: {
+                comfort: true
+              }
+            }
+          },
           where: {  status: true },
           orderBy: { id: order }
         });
@@ -126,11 +162,39 @@ export class CategoriesService {
 
       }
 
+      //Vamos a traer las comodidades
+      //Es una consulta invertida
+      let finalResponse: BuildListResponse[] = [];
+      for (const iterDetails of getCategories) {
+
+        let arrayComforts: Comfort[] = [];
+
+        const getDetails = await this.prisma.tBL_DTL_COMFORTS_CATEGORIES.findMany({
+          where: { categoryId: iterDetails.id }
+        });
+
+        for (const iterComforts of getDetails) {
+          
+          const getComforts = await this.prisma.tBL_COMFORTS.findFirst({
+            where: { id: iterComforts.comfortId }
+          })
+
+          if( getComforts ) arrayComforts.push(getComforts);
+
+        }
+
+        finalResponse.push({
+          getCategories: iterDetails,
+          arrayComforts
+        });
+
+      }
+
       const pageMetaDto = new PageMetaInput({ itemCount, pageOptionsArgs });
       const finalResult = new PageInput(getCategories, pageMetaDto)
 
       return {
-        data: getCategories,
+        data: finalResponse,
         meta: pageMetaDto
       };
 
@@ -148,7 +212,7 @@ export class CategoriesService {
 
   }
 
-  async findOne(id: number): Promise<Category | CustomError> {
+  async findOne(id: number): Promise<CategoryResponseWithComforts | CustomError> {
 
     const logger = new Logger('CategoriesService - findOne')
 
@@ -165,7 +229,25 @@ export class CategoriesService {
 
       if( getCategory == null ) return CustomError.notFoundError(`No se encontró categoría con el ID ${id}`);
 
-      return getCategory;
+      //Obtengamos las comodidades
+      let arrayComforts: Comfort[] = [];
+      const getComfortsDetails = await this.prisma.tBL_DTL_COMFORTS_CATEGORIES.findMany({
+        where: { categoryId: getCategory.id }
+      });
+
+      for (const iter of getComfortsDetails) {
+        const getComfort = await this.prisma.tBL_COMFORTS.findFirst({
+          where: { id : iter.id }
+        });
+
+        if( getComfort ) arrayComforts.push(getComfort);
+
+      }
+
+      return {
+        category: getCategory,
+        comfortsList: arrayComforts
+      }
 
     } catch (error) {
 
@@ -185,7 +267,7 @@ export class CategoriesService {
     id: number, 
     updateCategoryInput: UpdateCategoryInput,
     user: User
-  ): Promise<Category | CustomError> {
+  ): Promise<CategoryResponse | CustomError> {
 
     const logger = new Logger('CategoriesService - update');
     const { name, description, theme } = updateCategoryInput;
@@ -227,7 +309,36 @@ export class CategoriesService {
         }
       });
 
-      return updateCategory;
+      //Si dado el caso vamos a registrar las comodidades de una vez ...
+      let arrayComfortsForCategory: ComfortsForCategory[] = [];
+      if( updateCategoryInput.comfortsList && updateCategoryInput.comfortsList != null ){
+
+        //Primero verificamos las comodidades que tenemos, las borramos primero y re registramos
+        await this.prisma.tBL_DTL_COMFORTS_CATEGORIES.deleteMany({
+          where: { categoryId: updateCategory.id }
+        })
+
+        for (const iter of updateCategoryInput.comfortsList) {
+          
+          const createComforts = await this.prisma.tBL_DTL_COMFORTS_CATEGORIES.create({
+            data: {
+              userCreateAt: user.email,
+              createDateAt: new Date(),
+              categoryId: updateCategory.id,
+              comfortId: iter
+            }
+          });
+
+          arrayComfortsForCategory.push(createComforts);
+
+        }  
+
+      }
+
+      return {
+        category: updateCategory,
+        comfortsList: arrayComfortsForCategory
+      };
       
     } catch (error) {
 
