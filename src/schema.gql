@@ -164,6 +164,11 @@ type CategoryResponseWithComforts {
   comfortsList: [Comfort!]!
 }
 
+type Room {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 type Query {
   """Método inicial para las configuraciones GraphQL"""
   hello: String!
@@ -187,6 +192,8 @@ type Query {
 
   """Obtener categoría por ID"""
   category(id: Int!): CategoryResponseWithComforts!
+  rooms: [Room!]!
+  room(id: Int!): Room!
 }
 
 input PageOptionsArgs {
@@ -217,6 +224,9 @@ type Mutation {
 
   """Eliminar lógicamente una categoría"""
   removeCategory(id: Int!): Category!
+  createRoom(createRoomInput: CreateRoomInput!): Room!
+  updateRoom(updateRoomInput: UpdateRoomInput!): Room!
+  removeRoom(id: Int!): Room!
 }
 
 input CreateComfortInput {
@@ -282,5 +292,16 @@ input UpdateCategoryInput {
   userUpdateAt: String
   updateDateAt: DateTime
   comfortsList: [Int!]
+  id: Int!
+}
+
+input CreateRoomInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateRoomInput {
+  """Example field (placeholder)"""
+  exampleField: Int
   id: Int!
 }

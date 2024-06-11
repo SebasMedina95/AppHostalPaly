@@ -30,12 +30,13 @@ model TBL_CATEGORIES {
   theme                       String?
   status                      Boolean                       @default(true)
   populate                    Int                           @default(0)
-  userCreateAt        String?
+  userCreateAt                String?
   createDateAt                DateTime?
-  userUpdateAt        String?
+  userUpdateAt                String?
   updateDateAt                DateTime?
   TBL_ROOMS                   TBL_ROOMS[]
   TBL_DTL_COMFORTS_CATEGORIES TBL_DTL_COMFORTS_CATEGORIES[]
+  TBL_DTL_IMAGES_CATEGORIES   TBL_DTL_IMAGES_CATEGORIES[]
 }
 
 model TBL_COMFORTS {
@@ -88,4 +89,13 @@ model TBL_DTL_COMFORTS_CATEGORIES {
   categoryId   Int
   comfort      TBL_COMFORTS   @relation(fields: [comfortId], references: [id])
   comfortId    Int
+}
+
+model TBL_DTL_IMAGES_CATEGORIES {
+  id           Int            @id @default(autoincrement())
+  url          String
+  userCreateAt String?
+  createDateAt DateTime?
+  category     TBL_CATEGORIES @relation(fields: [categoryId], references: [id])
+  categoryId   Int
 }
