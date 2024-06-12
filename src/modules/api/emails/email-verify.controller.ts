@@ -1,10 +1,12 @@
-import { Controller, Get, Param } from "@nestjs/common";
-import { AuthService } from "../auth.service";
+import { Controller, Get, Param, UseGuards } from "@nestjs/common";
+import { AuthService } from "../../auth/auth.service";
 import { EmailVerifyService } from "./email-verify.service";
+import { JwtAuthGuard } from "src/modules/auth/guards/jwt-auth.guard";
 
 
 
 @Controller('email')
+@UseGuards( JwtAuthGuard ) //? El JwtAuthGuard es mi Guard personalizado para GraphQL
 export class EmailVerifyController {
 
     constructor(

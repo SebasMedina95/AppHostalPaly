@@ -14,7 +14,7 @@ import { CustomError } from '../../helpers/errors/custom.error';
 
 import { UsersService } from '../users/users.service';
 import { PrismaService } from '../../config/prisma/prisma.service';
-import { EmailService } from './email/email.service';
+import { EmailService } from '../api/emails/emails-sends/email.service';
 
 import { User } from '../users/entities/user.entity';
 

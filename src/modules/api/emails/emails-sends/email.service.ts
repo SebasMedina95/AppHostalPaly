@@ -2,9 +2,9 @@ import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import * as nodemailer from 'nodemailer';
 
-import { SendMailOptions } from "../interfaces/email.interfaces";
-import { User } from "../../../modules/users/entities/user.entity";
-import { SignupInput } from "../dto/inputs/signup.input";
+import { SendMailOptions } from "../../../auth/interfaces/email.interfaces";
+import { User } from "../../../users/entities/user.entity";
+import { SignupInput } from "../../../auth/dto/inputs/signup.input";
 
 
 @Injectable()

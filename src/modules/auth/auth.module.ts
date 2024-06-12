@@ -4,14 +4,14 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 
 import { AuthService } from './auth.service';
-import { EmailService } from './email/email.service';
+import { EmailService } from '../api/emails/emails-sends/email.service';
 
 import { PrismaModule } from '../../config/prisma/prisma.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
 import { AuthResolver } from './auth.resolver';
 import { UsersModule } from '../users/users.module';
-import { EmailVerifyModule } from './api-rest/email-verify.module';
+import { EmailVerifyModule } from '../api/emails/email-verify.module';
 
 @Module({
   providers: [

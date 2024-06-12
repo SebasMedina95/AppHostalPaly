@@ -34,7 +34,7 @@ $ npm run start:dev
 ```
 7. Puede verificar que la aplicación este OK en la terminal o bien entrando al sitio:
 ```bash
-$ http://localhost:5500/api-hostalpaly
+$ http://localhost:*PORT*/api-hostalpaly
 ```
 Si en el caso anterior no obtiene respuesta, asegurece de tener el servidor estático configurado, al ser una aplicación con GraphQL entonces la configuración está dada para la confguración por defecto del servidor de Apollo.
 8. Para la revisión en Apollo Studio, ingrese a la siguiente URL pero teniendo el proyecto en ejecución DEV:
@@ -79,4 +79,8 @@ $ npm run migration:rollback
 
 ## APUNTES ADICIONALES ##
 - Se crearon Types para manejar la estructuración de la paginación con GraphQL y generar un tipado más estructurado conforme a los requerimientos. Lo que ocurre es que como se maneja diferente a NestJS sin GraphQL el tema de la paginación, nos apoyamos de los Types por Módulos para generar una estructura genérica mejor implementada para una paginación que provea mejor información así como el tema del filtro.
-- Para la confirmación del correo electrónico, a pesar de que estamos trabajando con GraphQL End Points, se optó por crear un sub modulo que funcionara como una API RESTful tradicional solamente para la generación del cambio de comprobación de email, esto con la finalidad de no dar tantas vueltas y generar una solución más efectiva sin salirnos del marco de GraphQL, ya que este llamado lo hacemos desde un GraphQL End Point. Información del end point rest: ``GET - localhost:5500/api-hostalpaly/v1/email/verify-email/:idUsuario``
+- Para la confirmación del correo electrónico, a pesar de que estamos trabajando con GraphQL End Points, se optó por crear un sub modulo que funcionara como una API RESTful tradicional solamente para la generación del cambio de comprobación de email así como también para la carga de adjuntos, esto con la finalidad de no dar tantas vueltas y generar una solución más efectiva sin salirnos del marco de GraphQL (Por medio de documentación y diferentes foros, las nuevas versiones de GraphQL y NestJS han hecho muy complicada la implementación de estos dos aspectos). Información del end point rest:
+```
+GET  (Sin Body, ejecutado por URL a través del Link enviado)     - localhost:5500/api-hostalpaly/v1/email/verify-email/:idUsuario
+POST (Con Body en Form Data y Adjuntos [Propiedad: imagesRooms]) - localhost:5500/api-hostalpaly/v1/uploads/rooms/:idCategory
+```

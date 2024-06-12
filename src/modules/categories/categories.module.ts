@@ -19,6 +19,9 @@ import { AuthModule } from '../auth/auth.module';
     PrismaModule,
     Category,
     ComfortsForCategory
+  ],
+  exports: [
+    CategoriesService
   ]
 })
 export class CategoriesModule {}
