@@ -16,6 +16,7 @@ import { User } from './entities/user.entity';
 import { PrismaService } from '../../config/prisma/prisma.service';
 import { PageMetaInput } from 'src/helpers/pagination/dto/page-meta.input';
 import { PageInput } from 'src/helpers/pagination/dto/page.input';
+import { UpdateAuthInput } from '../auth/dto/inputs/update-auth.input';
 
 @Injectable()
 export class UsersService {
@@ -213,8 +214,52 @@ export class UsersService {
   //? Lo llamaremos desde Auth
   //? Nos apoyaremos para actualizar el password
   //? Nos apoyaremos para actualizar el avatar
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async updateFieldsSimple(user: User, updateUserInput: UpdateAuthInput): Promise<User | CustomError> {
+
+    const logger = new Logger('UsersService - updateFieldsSimple')
+
+    try {
+
+      //1. Verificamos existencia del usuario
+      const getUser = await this.prisma.tBL_USERS.findFirst({
+        where: {
+          AND: [
+            { id: user.id },
+            { isBlock: false }
+          ]
+        }
+      })
+
+      if( !getUser )
+        throw CustomError.badRequestError(`No se encontró el usuario o se encuentra bloqueado para actualizar.`);
+
+      //2. El usuario solo puede actualizar su propia información a menos de que sea ADMIN.
+      if( user.id != updateUserInput.id ){
+        if( !user.roles.includes("ADMIN") ){
+          throw CustomError.badRequestError(`No puede actualizar la información de un usuario diferente al logeado actualmente, a menos que sea ADMIN.`);
+        }
+      }
+
+      //3. Actualización
+      const updateUser = await this.prisma.tBL_USERS.update({
+        where: { id: updateUserInput.id },
+        data: { ...updateUserInput }
+      })
+
+      return updateUser;
+      
+    } catch (error) {
+
+      logger.log(`Ocurrió un error al intentar actualizar el usuario: ${error}`);
+      throw CustomError.internalServerError(`${error}`);
+      
+    } finally {
+      
+      logger.log(`Actualización de usuario finalizado`);
+      await this.prisma.$disconnect();
+
+    }
+
   }
 
   async block(id: number): Promise<User | CustomError> {
@@ -253,4 +298,14 @@ export class UsersService {
     }
     
   }
+
+  //******************************TODO ******************************
+  async updatePassword(){}
+
+  //******************************TODO ******************************
+  async updateImg(){}
+
+  //******************************TODO ******************************
+  async recoveryPassword(){}
+
 }

@@ -47,12 +47,12 @@ export class AuthService {
         return CustomError.badRequestError("Ocurrió algún error al enviar el email");
 
       //* Paso 3. Genero token (Podría ser opcional, tendrá más sentido en el Login)
-      //TODO ...
+      const token: string = this.getJwtToken( user.id );
 
 
       return {
         user,
-        token: "ABC123",
+        token,
       }
       
     } catch (error) {
@@ -60,6 +60,29 @@ export class AuthService {
       logger.log(`Ocurrió un error al intentar crear el usuario: ${error}`);
       throw CustomError.internalServerError(`${error}`);
       
+    }
+
+  }
+
+  async updateFieldsSimple(updateAuthInput: UpdateAuthInput, user: User): Promise<User | CustomError> {
+
+    const logger = new Logger('AuthService - update');
+    const currentUser: User = user;
+
+    try {
+
+      const user: User | CustomError = await this.usersService.updateFieldsSimple(currentUser, updateAuthInput);
+
+      if( user instanceof CustomError )
+        return CustomError.badRequestError("Ocurrió algún error en la actualización de usuario y no podemos proseguir");
+
+      return user;
+      
+    } catch (error) {
+      
+      logger.log(`Ocurrió un error al intentar actualizar el usuario: ${error}`);
+      throw CustomError.internalServerError(`${error}`);
+
     }
 
   }

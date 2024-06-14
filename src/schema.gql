@@ -213,6 +213,10 @@ type Mutation {
   """Eliminar lógicamente una comodidad"""
   removeComfort(id: Int!): Comfort!
   signup(signupInput: SignupInput!): AuthResponse!
+  updateUserFromLogin(updateAuthInput: UpdateAuthInput!): User!
+  updateUserPasswordFromLogin: User!
+  updateUserImgFromLogin: User!
+  recoveryPasswordFromLogin: User!
   login(loginInput: LoginInput!): AuthResponse!
   blockUser(id: Int!): User!
 
@@ -261,6 +265,15 @@ input SignupInput {
   phone1: String
   phone2: String
   isBlock: Boolean
+}
+
+input UpdateAuthInput {
+  id: Int!
+  names: String
+  lastnames: String
+  gender: String
+  phone1: String
+  phone2: String
 }
 
 input LoginInput {
