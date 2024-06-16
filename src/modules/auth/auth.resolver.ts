@@ -5,14 +5,12 @@ import { Resolver,
 import { UseGuards } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
-
-import { Auth } from './entities/auth.entity';
 import { User } from '../users/entities/user.entity';
 
-import { CreateAuthInput } from './dto/inputs/create-auth.input';
 import { UpdateAuthInput } from './dto/inputs/update-auth.input';
 import { SignupInput } from './dto/inputs/signup.input';
 import { LoginInput } from './dto/inputs/login.input';
+import { UpdatePasswordInput } from './dto/inputs/update-password.input';
 
 import { AuthResponse } from './types/auth-response.type';
 
@@ -51,7 +49,15 @@ export class AuthResolver {
 
   //******************************TODO ******************************
   @Mutation(() => User, { name: 'updateUserPasswordFromLogin' })
-  async updatePassword(){}
+  @UseGuards( JwtAuthGuard ) //? El JwtAuthGuard es mi Guard personalizado para GraphQL
+  async updatePassword(
+    @Args('updatePasswordInput') updatePasswordInput: UpdatePasswordInput,
+    @CurrentUser([ ValidRoles.USER, ValidRoles.ADMIN ]) user: User
+  ): Promise<User | CustomError> {
+
+    return this.authService.updatePassword(updatePasswordInput, user);
+
+  }
 
   //******************************TODO ******************************
   @Mutation(() => User, { name: 'updateUserImgFromLogin' })

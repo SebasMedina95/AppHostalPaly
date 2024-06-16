@@ -4,10 +4,10 @@ import { Injectable,
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
-import { CreateAuthInput } from './dto/inputs/create-auth.input';
 import { UpdateAuthInput } from './dto/inputs/update-auth.input';
 import { SignupInput } from './dto/inputs/signup.input';
 import { LoginInput } from './dto/inputs/login.input';
+import { UpdatePasswordInput } from './dto/inputs/update-password.input';
 
 import { AuthResponse } from './types/auth-response.type';
 import { CustomError } from '../../helpers/errors/custom.error';
@@ -72,10 +72,6 @@ export class AuthService {
     try {
 
       const user: User | CustomError = await this.usersService.updateFieldsSimple(currentUser, updateAuthInput);
-
-      if( user instanceof CustomError )
-        return CustomError.badRequestError("Ocurrió algún error en la actualización de usuario y no podemos proseguir");
-
       return user;
       
     } catch (error) {
@@ -182,8 +178,29 @@ export class AuthService {
 
   }
 
+  async updatePassword( updatePasswordInput: UpdatePasswordInput, user: User ): Promise<User | CustomError> {
+
+    const logger = new Logger('AuthService - updatePassword');
+    const currentUser: User = user;
+
+    try {
+
+      const user: User | CustomError = await this.usersService.updatePassword(updatePasswordInput, currentUser);
+      return user;
+      
+    } catch (error) {
+      
+      logger.log(`Ocurrió un error al intentar actualizar el password del usuario: ${error}`);
+      throw CustomError.internalServerError(`${error}`);
+
+    }
+
+  }
+
   private getJwtToken( userId: number ): string {
+
     return this.jwtService.sign({ id: userId });
+
   }
 
   

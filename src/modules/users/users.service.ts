@@ -6,6 +6,8 @@ import * as bcrypt from 'bcrypt';
 import { CreateUserInput } from './dto/inputs/create-user.input';
 import { UpdateUserInput } from './dto/inputs/update-user.input';
 import { SignupInput } from '../auth/dto/inputs/signup.input';
+import { UpdateAuthInput } from '../auth/dto/inputs/update-auth.input';
+import { UpdatePasswordInput } from '../auth/dto/inputs/update-password.input';
 
 import { PageOptionsArgs } from '../../helpers/pagination/dto/page-options.args';
 import { UserPaginationResponse } from './types/pagination-response.type';
@@ -14,9 +16,8 @@ import { CustomError } from '../../helpers/errors/custom.error';
 import { User } from './entities/user.entity';
 
 import { PrismaService } from '../../config/prisma/prisma.service';
-import { PageMetaInput } from 'src/helpers/pagination/dto/page-meta.input';
-import { PageInput } from 'src/helpers/pagination/dto/page.input';
-import { UpdateAuthInput } from '../auth/dto/inputs/update-auth.input';
+import { PageMetaInput } from '../../helpers/pagination/dto/page-meta.input';
+import { PageInput } from '../../helpers/pagination/dto/page.input';
 
 @Injectable()
 export class UsersService {
@@ -231,12 +232,12 @@ export class UsersService {
       })
 
       if( !getUser )
-        throw CustomError.badRequestError(`No se encontró el usuario o se encuentra bloqueado para actualizar.`);
+        return CustomError.badRequestError(`No se encontró el usuario o se encuentra bloqueado para actualizar.`);
 
       //2. El usuario solo puede actualizar su propia información a menos de que sea ADMIN.
       if( user.id != updateUserInput.id ){
         if( !user.roles.includes("ADMIN") ){
-          throw CustomError.badRequestError(`No puede actualizar la información de un usuario diferente al logeado actualmente, a menos que sea ADMIN.`);
+          return CustomError.badRequestError(`No puede actualizar la información de un usuario diferente al logeado actualmente, a menos que sea ADMIN.`);
         }
       }
 
@@ -300,7 +301,63 @@ export class UsersService {
   }
 
   //******************************TODO ******************************
-  async updatePassword(){}
+  async updatePassword( updatePasswordInput: UpdatePasswordInput, user: User ): Promise<User | CustomError> {
+
+    const logger = new Logger('UsersService - updatePassword');
+
+    try {
+
+      //1. Verificamos existencia del usuario
+      const getUser = await this.prisma.tBL_USERS.findFirst({
+        where: {
+          AND: [
+            { id: user.id },
+            { isBlock: false }
+          ]
+        }
+      })
+
+      if( !getUser )
+        throw CustomError.badRequestError(`No se encontró el usuario o se encuentra bloqueado para actualizar.`);
+
+      //2. El usuario solo puede actualizar su propia información a menos de que sea ADMIN.
+      if( user.id != updatePasswordInput.id ){
+        if( !user.roles.includes("ADMIN") ){
+          return CustomError.badRequestError(`No puede actualizar la información de un usuario diferente al logeado actualmente, a menos que sea ADMIN.`);
+        }
+      }
+
+      //3. Verificar que la contraseña actual proporcionada coincida con la que esta en BD
+      if( !bcrypt.compareSync( updatePasswordInput.currentPassword, getUser.password ) )
+        return CustomError.badRequestError("La contraseña actual no coincide");
+
+      //4. Verificar la nueva contraseña contra la confirmación de la nueva contraseña
+      if( updatePasswordInput.newPassword != updatePasswordInput.confirmPassword )
+        return CustomError.badRequestError("La nueva contraseña y su confirmación no coinciden");
+
+      //5 Actualización
+      const updateUser = await this.prisma.tBL_USERS.update({
+        where: { id: user.id },
+        data: {
+          password: bcrypt.hashSync( updatePasswordInput.newPassword, 10 )
+        }
+      })
+
+      return updateUser;
+      
+    } catch (error) {
+
+      logger.log(`Ocurrió un error al intentar actualizar el password el usuario: ${error}`);
+      throw CustomError.internalServerError(`${error}`);
+      
+    } finally {
+      
+      logger.log(`Actualización de password finalizada`);
+      await this.prisma.$disconnect();
+
+    }
+
+  }
 
   //******************************TODO ******************************
   async updateImg(){}

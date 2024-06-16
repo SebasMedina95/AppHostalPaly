@@ -214,7 +214,7 @@ type Mutation {
   removeComfort(id: Int!): Comfort!
   signup(signupInput: SignupInput!): AuthResponse!
   updateUserFromLogin(updateAuthInput: UpdateAuthInput!): User!
-  updateUserPasswordFromLogin: User!
+  updateUserPasswordFromLogin(updatePasswordInput: UpdatePasswordInput!): User!
   updateUserImgFromLogin: User!
   recoveryPasswordFromLogin: User!
   login(loginInput: LoginInput!): AuthResponse!
@@ -274,6 +274,13 @@ input UpdateAuthInput {
   gender: String
   phone1: String
   phone2: String
+}
+
+input UpdatePasswordInput {
+  id: Int!
+  currentPassword: String!
+  newPassword: String!
+  confirmPassword: String!
 }
 
 input LoginInput {
