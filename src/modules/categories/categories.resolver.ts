@@ -29,7 +29,7 @@ export class CategoriesResolver {
 
   constructor(private readonly categoriesService: CategoriesService) {}
 
-  @Mutation(() => CategoryResponse, { description: "Crear una nueva categoría" })
+  @Mutation(() => CategoryResponse, { name: 'createCategory', description: "Crear una nueva categoría" })
   async createCategory(
     @Args('createCategoryInput') createCategoryInput: CreateCategoryInput,
     @CurrentUser([ ValidRoles.EMPLOYEE_NV1, ValidRoles.ADMIN ]) user: User
@@ -39,7 +39,7 @@ export class CategoriesResolver {
 
   }
 
-  @Query(() => CategoryPaginationResponse, { name: 'categories', description: "Listar categorías con paginación y filtro" })
+  @Query(() => CategoryPaginationResponse, { name: 'findAllCategories', description: "Listar categorías con paginación y filtro" })
   async findAll(
     @Args('pageOptionsArgs') pageOptionsArgs: PageOptionsArgs,
     @CurrentUser([ ValidRoles.EMPLOYEE_NV1, ValidRoles.ADMIN ]) user: User
@@ -49,7 +49,7 @@ export class CategoriesResolver {
 
   }
 
-  @Query(() => CategoryResponseWithComforts, { name: 'category', description: "Obtener categoría por ID" })
+  @Query(() => CategoryResponseWithComforts, { name: 'findOneCategory', description: "Obtener categoría por ID" })
   async findOne(
     @Args('id', { type: () => Int }) id: number,
     @CurrentUser([ ValidRoles.EMPLOYEE_NV1, ValidRoles.ADMIN ]) user: User
@@ -59,7 +59,7 @@ export class CategoriesResolver {
 
   }
 
-  @Mutation(() => CategoryResponse, { description: "Actualizar una categoría" })
+  @Mutation(() => CategoryResponse, { name: 'updateCategory', description: "Actualizar una categoría" })
   async updateCategory(
     @Args('updateCategoryInput') updateCategoryInput: UpdateCategoryInput,
     @CurrentUser([ ValidRoles.EMPLOYEE_NV1, ValidRoles.ADMIN ]) user: User
@@ -69,7 +69,7 @@ export class CategoriesResolver {
 
   }
 
-  @Mutation(() => Category, { description: "Eliminar lógicamente una categoría" })
+  @Mutation(() => Category, { name: 'removeCategory', description: "Eliminar lógicamente una categoría" })
   async removeCategory(
     @Args('id', { type: () => Int }) id: number,
     @CurrentUser([ ValidRoles.EMPLOYEE_NV1, ValidRoles.ADMIN ]) user: User

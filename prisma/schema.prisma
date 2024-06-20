@@ -52,19 +52,20 @@ model TBL_COMFORTS {
 }
 
 model TBL_USERS {
-  id             Int      @id @default(autoincrement())
-  names          String   @db.VarChar(150)
-  lastnames      String   @db.VarChar(150)
-  email          String   @unique @db.VarChar(150)
-  emailValidated Boolean  @default(false)
-  password       String   @db.VarChar(100)
-  roles          String[] @default(["USER"])
-  gender         String   @db.VarChar(1)
-  img            String?  @default("default.png")
-  phone1         String?
-  phone2         String?
-  isBlock        Boolean  @default(false)
-  userWhoBlock   String?
+  id               Int      @id @default(autoincrement())
+  names            String   @db.VarChar(150)
+  lastnames        String   @db.VarChar(150)
+  email            String   @unique @db.VarChar(150)
+  emailValidated   Boolean  @default(false)
+  password         String   @db.VarChar(100)
+  roles            String[] @default(["USER"])
+  gender           String   @db.VarChar(1)
+  img              String?  @default("default.png")
+  phone1           String?
+  phone2           String?
+  isBlock          Boolean  @default(false)
+  userWhoBlock     String?
+  passwordRecovery String?
 }
 
 model TBL_ROOMS {

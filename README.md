@@ -79,8 +79,21 @@ $ npm run migration:rollback
 
 ## APUNTES ADICIONALES ##
 - Se crearon Types para manejar la estructuración de la paginación con GraphQL y generar un tipado más estructurado conforme a los requerimientos. Lo que ocurre es que como se maneja diferente a NestJS sin GraphQL el tema de la paginación, nos apoyamos de los Types por Módulos para generar una estructura genérica mejor implementada para una paginación que provea mejor información así como el tema del filtro.
-- Para la confirmación del correo electrónico, a pesar de que estamos trabajando con GraphQL End Points, se optó por crear un sub modulo que funcionara como una API RESTful tradicional solamente para la generación del cambio de comprobación de email así como también para la carga de adjuntos, esto con la finalidad de no dar tantas vueltas y generar una solución más efectiva sin salirnos del marco de GraphQL (Por medio de documentación y diferentes foros, las nuevas versiones de GraphQL y NestJS han hecho muy complicada la implementación de estos dos aspectos). Información del end point rest:
+- Para la confirmación del correo electrónico, recuperación de contraseña y gestión de archivos/imágenes, a pesar de que estamos trabajando con GraphQL End Points, se optó por crear un sub modulo que funcionara como una API RESTful tradicional solamente para la generación del cambio de comprobación de email así como también para la carga de adjuntos (imágenes y posiblemente se expandirá para archivos pdf), esto con la finalidad de no dar tantas vueltas y generar una solución más efectiva sin salirnos del marco de GraphQL (Por medio de documentación y diferentes foros, las nuevas versiones de GraphQL y NestJS han hecho muy complicada la implementación de estos dos aspectos forzando incluso a trabajar con versiones antiguas y ya con vulnerabilidades ...). Información del end point REST:
 ```
 GET  (Sin Body, ejecutado por URL a través del Link enviado)     - localhost:5500/api-hostalpaly/v1/email/verify-email/:idUsuario
+GET  (Sin Body, ejecutado por URL a través del Link enviado)     - localhost:5500/api-hostalpaly/v1/email/recovery-passwor/`:password-:idUsuario`
 POST (Con Body en Form Data y Adjuntos [Propiedad: imagesRooms]) - localhost:5500/api-hostalpaly/v1/uploads/rooms/:idCategory
+POST (cON Body en Form Data y Adjuntos [Propiedad: imageUser])   - localhost:5500/api-hostalpaly/v1/uploads/user/:idUsuario
 ```
+
+## Pendiente ##
+DEBEMOS REVISAR VARIAS COSAS:
+
+1. DESCRIPCIONES DE LOS RESOLVERS PARA QUE EN EL APOLLO SE NOS VEA MÁS DETALLADA EL PORQUE DE LAS COSAS Y COMO USARLAS.
+2. TERMINAR EN EL AUTH LA RECUPERACIÓN DE LA CONTRASEÑA PERDIDA
+3. AJUSTAR LA DOCUMENTACIÓN PARA QUE SEA CLARO CUANDO Y COMO DEBEMOS USAR:
+    - END POINT API REST PARA CARGAR VARIAS IMAGENES PARA CATEGORÍAS AL TIEMPO
+    - END POINT API REST PARA CARGAR UNA IMAGEN PARA EL AVATAR DEL USUARIO
+    - END POINT API REST PARA ENVIAR EMAIL DE VERIFICACIÓN DE CUENTA
+    - END POINT API REST PARA ENVIAR EMAIL DE RECUPERACIÓN DE CUENTA

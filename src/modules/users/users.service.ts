@@ -49,7 +49,7 @@ export class UsersService {
         data: {
           names: signupInput.names,
           lastnames: signupInput.lastnames,
-          email: signupInput.email,
+          email: signupInput.email.toLowerCase().trim(),
           password: bcrypt.hashSync( signupInput.password, 10 ),
           gender: signupInput.gender,
           img: signupInput.img,
@@ -300,7 +300,6 @@ export class UsersService {
     
   }
 
-  //******************************TODO ******************************
   async updatePassword( updatePasswordInput: UpdatePasswordInput, user: User ): Promise<User | CustomError> {
 
     const logger = new Logger('UsersService - updatePassword');
@@ -358,11 +357,5 @@ export class UsersService {
     }
 
   }
-
-  //******************************TODO ******************************
-  async updateImg(){}
-
-  //******************************TODO ******************************
-  async recoveryPassword(){}
 
 }

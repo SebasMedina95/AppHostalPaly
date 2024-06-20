@@ -31,7 +31,7 @@ export class UsersResolver {
   //   return this.usersService.create(createUserInput);
   // }
 
-  @Query(() => UserPaginationResponse, { name: 'users' })
+  @Query(() => UserPaginationResponse, { name: 'findAllUsers', description: "Listar todos los usuarios con filtro y paginación" })
   async findAll(
     @Args('pageOptionsArgs') pageOptionsArgs: PageOptionsArgs,
     @CurrentUser([ ValidRoles.ADMIN ]) user: User
@@ -52,7 +52,7 @@ export class UsersResolver {
 
   // }
 
-  @Mutation(() => User)
+  @Mutation(() => User, { name: 'blockUser', description: 'Bloquear un usuario' })
   blockUser(
     @Args('id', { type: () => Int }) id: number,
     @CurrentUser([ ValidRoles.ADMIN ]) user: User

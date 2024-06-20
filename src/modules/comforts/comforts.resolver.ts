@@ -29,7 +29,7 @@ export class ComfortsResolver {
 
   constructor(private readonly comfortsService: ComfortsService) {}
 
-  @Mutation(() => Comfort, { description: "Crear una nueva comodidad" })
+  @Mutation(() => Comfort, { name: 'createComfort', description: "Crear una nueva comodidad" })
   async createComfort(
     @Args('createComfortInput') createComfortInput: CreateComfortInput,
     @CurrentUser([ ValidRoles.EMPLOYEE_NV1, ValidRoles.ADMIN ]) user: User
@@ -39,7 +39,7 @@ export class ComfortsResolver {
 
   }
 
-  @Query(() => ComfortPaginationResponse, { name: 'comforts', description: "Listar comodidades con paginación y filtro" })
+  @Query(() => ComfortPaginationResponse, { name: 'findAllComforts', description: "Listar comodidades con paginación y filtro" })
   async findAll(
     @Args('pageOptionsArgs') pageOptionsArgs: PageOptionsArgs,
     @CurrentUser([ ValidRoles.EMPLOYEE_NV1, ValidRoles.ADMIN ]) user: User
@@ -49,7 +49,7 @@ export class ComfortsResolver {
 
   }
 
-  @Query(() => Comfort, { name: 'comfort', description: "Obtener comodidad por ID" })
+  @Query(() => Comfort, { name: 'findOneComfort', description: "Obtener comodidad por ID" })
   async findOne(
     @Args('id', { type: () => Int }) id: number,
     @CurrentUser([ ValidRoles.EMPLOYEE_NV1, ValidRoles.ADMIN ]) user: User
@@ -59,7 +59,7 @@ export class ComfortsResolver {
 
   }
 
-  @Mutation(() => Comfort, { description: "Actualizar una comodidad" })
+  @Mutation(() => Comfort, { name: 'updateComfort', description: "Actualizar una comodidad" })
   async updateComfort(
     @Args('updateComfortInput') updateComfortInput: UpdateComfortInput,
     @CurrentUser([ ValidRoles.EMPLOYEE_NV1, ValidRoles.ADMIN ]) user: User
@@ -69,7 +69,7 @@ export class ComfortsResolver {
 
   }
 
-  @Mutation(() => Comfort, { description: "Eliminar lógicamente una comodidad" })
+  @Mutation(() => Comfort, { name: 'removeComfort', description: "Eliminar lógicamente una comodidad" })
   async removeComfort(
     @Args('id', { type: () => Int }) id: number,
     @CurrentUser([ ValidRoles.EMPLOYEE_NV1, ValidRoles.ADMIN ]) user: User

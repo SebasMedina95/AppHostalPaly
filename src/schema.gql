@@ -78,6 +78,9 @@ type User {
 
   """Email de usuario que bloqueó"""
   userWhoBlock: String
+
+  """Contraseña Recuperación"""
+  passwordRecovery: String
 }
 
 type ComfortPaginationResponse {
@@ -180,20 +183,28 @@ type Query {
   generateArrayPairs(value: Int): [Int!]!
 
   """Listar comodidades con paginación y filtro"""
-  comforts(pageOptionsArgs: PageOptionsArgs!): ComfortPaginationResponse!
+  findAllComforts(pageOptionsArgs: PageOptionsArgs!): ComfortPaginationResponse!
 
   """Obtener comodidad por ID"""
-  comfort(id: Int!): Comfort!
+  findOneComfort(id: Int!): Comfort!
+
+  """Revalidar el Token"""
   revalidate: AuthResponse!
-  users(pageOptionsArgs: PageOptionsArgs!): UserPaginationResponse!
+
+  """Listar todos los usuarios con filtro y paginación"""
+  findAllUsers(pageOptionsArgs: PageOptionsArgs!): UserPaginationResponse!
 
   """Listar categorías con paginación y filtro"""
-  categories(pageOptionsArgs: PageOptionsArgs!): CategoryPaginationResponse!
+  findAllCategories(pageOptionsArgs: PageOptionsArgs!): CategoryPaginationResponse!
 
   """Obtener categoría por ID"""
-  category(id: Int!): CategoryResponseWithComforts!
-  rooms: [Room!]!
-  room(id: Int!): Room!
+  findOneCategory(id: Int!): CategoryResponseWithComforts!
+
+  """Listar habitaciones con paginación y filtro"""
+  findAllRooms: [Room!]!
+
+  """Obtener una habitación por ID"""
+  findOneRoom(id: Int!): Room!
 }
 
 input PageOptionsArgs {
@@ -212,12 +223,21 @@ type Mutation {
 
   """Eliminar lógicamente una comodidad"""
   removeComfort(id: Int!): Comfort!
+
+  """Registrarse en el sistema"""
   signup(signupInput: SignupInput!): AuthResponse!
+
+  """Actualizar información básica del usuario"""
   updateUserFromLogin(updateAuthInput: UpdateAuthInput!): User!
+
+  """Actualizar la contraseña"""
   updateUserPasswordFromLogin(updatePasswordInput: UpdatePasswordInput!): User!
-  updateUserImgFromLogin: User!
-  recoveryPasswordFromLogin: User!
+  recoveryPasswordFromLogin(emailRecovery: String!): User!
+
+  """Acceder al sistema"""
   login(loginInput: LoginInput!): AuthResponse!
+
+  """Bloquear un usuario"""
   blockUser(id: Int!): User!
 
   """Crear una nueva categoría"""
@@ -228,8 +248,14 @@ type Mutation {
 
   """Eliminar lógicamente una categoría"""
   removeCategory(id: Int!): Category!
+
+  """Crear una habitación"""
   createRoom(createRoomInput: CreateRoomInput!): Room!
+
+  """Actualizar una habitación"""
   updateRoom(updateRoomInput: UpdateRoomInput!): Room!
+
+  """Eliminar una habitación"""
   removeRoom(id: Int!): Room!
 }
 

@@ -197,9 +197,67 @@ export class AuthService {
 
   }
 
+  async recoveryPassword(emailRecovery: string): Promise<User | CustomError> {
+
+    const logger = new Logger('AuthService - recoveryPassword');
+
+    try {
+
+      //1. Verificar que el email exista
+      const search: string = emailRecovery.toLowerCase().trim();
+      const getEmail = await this.usersService.findOneByEmail(search)
+
+      if( !getEmail || getEmail instanceof CustomError )
+        return CustomError.badRequestError("No pudo ser enviado el email, esto puede deberse a que el email no se encuentra registrado");
+
+      //2. Genero un password aleatorio
+      const getRandomPass: string = this.generateRandomString(20);
+
+      //3. Actualizo el password de recuperación en la tabla
+      const updateUserPassRecovery = await this.prisma.tBL_USERS.update({
+        where: { id: getEmail.id },
+        data: {
+          passwordRecovery: getRandomPass
+        }
+      });
+
+      if( !updateUserPassRecovery )
+        return CustomError.badRequestError("No se pudo actualizar la contraseña de recuperación en la tabla");
+
+      //4. Envío del email
+      const sendEmail: boolean = await this.emailService.sendEmailRecoveryPassword(getEmail, getRandomPass);
+      
+      if( !sendEmail )
+        return CustomError.badRequestError("Ocurrió algún error al enviar el email");
+
+      return getEmail;
+      
+    } catch (error) {
+
+      logger.log(`Ocurrió un error al intentar enviar el email de recuperación: ${error}`);
+      throw CustomError.internalServerError(`${error}`);
+      
+    }
+
+  }
+
   private getJwtToken( userId: number ): string {
 
     return this.jwtService.sign({ id: userId });
+
+  }
+
+  private generateRandomString(length: number): string {
+
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+  
+    return result;
 
   }
 

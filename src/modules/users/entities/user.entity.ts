@@ -45,4 +45,7 @@ export class User {
   @Field( () => String, { description: "Email de usuario que bloqueó", nullable: true })
   userWhoBlock?: string;
 
+  @Field( () => String, { description: "Contraseña Recuperación", nullable: true })
+  passwordRecovery?: string;
+
 }

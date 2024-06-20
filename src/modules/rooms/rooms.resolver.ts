@@ -6,30 +6,49 @@ import { UpdateRoomInput } from './dto/update-room.input';
 
 @Resolver(() => Room)
 export class RoomsResolver {
+
   constructor(private readonly roomsService: RoomsService) {}
 
-  @Mutation(() => Room)
-  createRoom(@Args('createRoomInput') createRoomInput: CreateRoomInput) {
+  @Mutation(() => Room, { name: 'createRoom', description: "Crear una habitación" })
+  async createRoom(
+    @Args('createRoomInput') createRoomInput: CreateRoomInput
+  ) {
+
     return this.roomsService.create(createRoomInput);
+
   }
 
-  @Query(() => [Room], { name: 'rooms' })
-  findAll() {
+  @Query(() => [Room], { name: 'findAllRooms', description: "Listar habitaciones con paginación y filtro" })
+  async findAll() {
+
     return this.roomsService.findAll();
+
   }
 
-  @Query(() => Room, { name: 'room' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => Room, { name: 'findOneRoom', description: "Obtener una habitación por ID" })
+  async findOne(
+    @Args('id', { type: () => Int }) id: number
+  ) {
+
     return this.roomsService.findOne(id);
+
   }
 
-  @Mutation(() => Room)
-  updateRoom(@Args('updateRoomInput') updateRoomInput: UpdateRoomInput) {
+  @Mutation(() => Room, { name: 'updateRoom', description: "Actualizar una habitación" })
+  async updateRoom(
+    @Args('updateRoomInput') updateRoomInput: UpdateRoomInput
+  ) {
+
     return this.roomsService.update(updateRoomInput.id, updateRoomInput);
+
   }
 
-  @Mutation(() => Room)
-  removeRoom(@Args('id', { type: () => Int }) id: number) {
+  @Mutation(() => Room, { name: 'removeRoom', description: "Eliminar una habitación" })
+  async removeRoom(
+    @Args('id', { type: () => Int }) id: number
+  ) {
+
     return this.roomsService.remove(id);
+
   }
 }

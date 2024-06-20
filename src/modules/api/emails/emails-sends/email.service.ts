@@ -143,4 +143,82 @@ export class EmailService {
 
     }
 
+    async sendEmailRecoveryPassword(getEmail: User, getRandomPass: string): Promise<boolean> {
+
+        const { id, email, names, lastnames } = getEmail;
+        const concatParams: string = `${getRandomPass}-${id}`;
+        const link = `${ this.configService.get<string>('WEB_SERVICE_URL') }/email/recovery-password/${ concatParams }`;
+
+        const html = `
+
+            <!DOCTYPE html>
+            <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Recuperación de Contraseña</title>
+                </head>
+                <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;">
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;">
+                        <tr>
+                            <td align="center" bgcolor="#ffffff" style="padding: 40px 0;">
+                                <img src="https://cdn-icons-png.flaticon.com/512/6357/6357048.png" alt="Email Icon" width="80" style="display: block;"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td bgcolor="#ffffff" style="padding: 20px;">
+                                <h1 style="color: #333333; margin-top: 0;">Recuperación de Contraseña</h1>
+                                <p style="color: #666666;">
+                                    Cordial saludo ${names} ${lastnames}. 
+                                    Usted ha solicitado la recuperación de contraseña de su usuario para Hostal Paly, 
+                                    si acepta la recuperación de la contraseña, deberá usar la siguiente contraseña:
+                                </p>
+                                <p style="color: #FDB840;">
+                                    ${getRandomPass}
+                                </p>
+                                <p style="color: #5E0000;">
+                                    NOTA IMPORTANTE: ¡En este momento no se ha generado ninguna actualización!
+                                </p>
+                                <p style="color: #666666;">
+                                    Para realizar el cambio, solo debe presionar en el botón que se muestra a continuación,
+                                    si no lo hace, la contraseña no será cambiada y seguirá sin realizar el proceso de 
+                                    recuperación; al presionar el botón, su nueva contraseña pasará a ser ${getRandomPass}
+                                    y luego podrá cambiarla desde su panel de administración de la aplicación.
+                                </p>
+                                <a href="${ link }" 
+                                style="background-color: #FFD743; color: #ffffff; padding: 10px 20px; text-decoration: none; 
+                                border-radius: 4px; display: inline-block;">
+                                    Recuperar Contraseña
+                                </a>
+                                <p style="color: #666666; margin-top: 20px;">Si no puedes hacer clic en el botón, copia y pega la siguiente URL en tu navegador:</p>
+                                <p style="color: #007bff; margin-top: 10px;"><a href="${ link }" style="color: #007bff; text-decoration: underline;">${ link }</a></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td bgcolor="#f4f4f4" style="padding: 20px; text-align: center;">
+                                <p style="color: #666666; margin: 0;">
+                                    Este correo electrónico fue enviado desde la aplicación de Hostal Paly (API RESTful - NestJS + GraphQL).
+                                    Recuperación de contraseña para el correo de usuario: ${ email }
+                                    <b>Si se trata de un error por favor ignore este correo</b>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+            </html>
+
+        `;
+
+        const options = {
+            to: email,
+            subject: "Recuperación de Contraseña",
+            htmlBody: html
+        }
+
+        const isSent = await this.sendEmail( options );
+        if( !isSent ) return false;
+
+        return true;
+
+    }
+
 }

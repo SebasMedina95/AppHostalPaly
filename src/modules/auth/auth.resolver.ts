@@ -27,7 +27,7 @@ export class AuthResolver {
     private readonly authService: AuthService
   ) {}
 
-  @Mutation( () => AuthResponse, { name: 'signup' } )
+  @Mutation( () => AuthResponse, { name: 'signup', description: 'Registrarse en el sistema' } )
   async signup(
     @Args('signupInput') signupInput: SignupInput
   ): Promise<AuthResponse | CustomError> {
@@ -36,7 +36,7 @@ export class AuthResolver {
 
   }
 
-  @Mutation( () => User, { name: 'updateUserFromLogin' } )
+  @Mutation( () => User, { name: 'updateUserFromLogin', description: 'Actualizar información básica del usuario' } )
   @UseGuards( JwtAuthGuard ) //? El JwtAuthGuard es mi Guard personalizado para GraphQL
   async updateFieldsSimple(
     @Args('updateAuthInput') updateAuthInput: UpdateAuthInput,
@@ -47,8 +47,7 @@ export class AuthResolver {
 
   }
 
-  //******************************TODO ******************************
-  @Mutation(() => User, { name: 'updateUserPasswordFromLogin' })
+  @Mutation(() => User, { name: 'updateUserPasswordFromLogin', description: 'Actualizar la contraseña' })
   @UseGuards( JwtAuthGuard ) //? El JwtAuthGuard es mi Guard personalizado para GraphQL
   async updatePassword(
     @Args('updatePasswordInput') updatePasswordInput: UpdatePasswordInput,
@@ -60,15 +59,17 @@ export class AuthResolver {
   }
 
   //******************************TODO ******************************
-  @Mutation(() => User, { name: 'updateUserImgFromLogin' })
-  async updateImg(){}
-
-  //******************************TODO ******************************
   @Mutation(() => User, { name: 'recoveryPasswordFromLogin' })
-  async recoveryPassword(){}
+  async recoveryPassword(
+    @Args('emailRecovery') emailRecovery: string,
+  ): Promise<User | CustomError>{
+    
+    return this.authService.recoveryPassword(emailRecovery);
+    
+  }
 
 
-  @Mutation( () => AuthResponse, { name: 'login' } )
+  @Mutation( () => AuthResponse, { name: 'login', description: 'Acceder al sistema' } )
   async login(
     @Args('loginInput') loginInput: LoginInput
   ): Promise<AuthResponse | CustomError> {
@@ -77,7 +78,7 @@ export class AuthResolver {
 
   }
 
-  @Query( () => AuthResponse, { name: "revalidate" } )
+  @Query( () => AuthResponse, { name: "revalidate", description: "Revalidar el Token" } )
   @UseGuards( JwtAuthGuard ) //? El JwtAuthGuard es mi Guard personalizado para GraphQL
   async revalidateToken(
     @CurrentUser([ ValidRoles.ADMIN ]) user: User
