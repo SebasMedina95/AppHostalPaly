@@ -168,8 +168,46 @@ type CategoryResponseWithComforts {
 }
 
 type Room {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  """Id autoincrementado para la PK"""
+  id: Int!
+
+  """Id de la categoría"""
+  categoryId: Int!
+
+  """Nombre de la habitación"""
+  name: String!
+
+  """Se encuentra en mantenimiento"""
+  maintenance: Boolean!
+
+  """Descripciones de la habitación"""
+  description: String
+
+  """Estado de la habitación"""
+  status: Boolean!
+
+  """Email del usuario que registra"""
+  userCreateAt: String!
+
+  """Fecha de Registro"""
+  createDateAt: DateTime!
+
+  """Email del usuario que actualiza"""
+  userUpdateAt: String!
+
+  """Fecha de Actuaización"""
+  updateDateAt: DateTime!
+  category: Category
+}
+
+type RoomResponse {
+  room: Room!
+  categoryResponse: CategoryResponseWithComforts!
+}
+
+type RoomPaginationResponse {
+  data: [Room!]!
+  meta: PageMetaInput!
 }
 
 type Query {
@@ -201,10 +239,10 @@ type Query {
   findOneCategory(id: Int!): CategoryResponseWithComforts!
 
   """Listar habitaciones con paginación y filtro"""
-  findAllRooms: [Room!]!
+  findAllRooms(pageOptionsArgs: PageOptionsArgs!): RoomPaginationResponse!
 
   """Obtener una habitación por ID"""
-  findOneRoom(id: Int!): Room!
+  findOneRoom(id: Int!): [RoomResponse!]!
 }
 
 input PageOptionsArgs {
@@ -250,13 +288,13 @@ type Mutation {
   removeCategory(id: Int!): Category!
 
   """Crear una habitación"""
-  createRoom(createRoomInput: CreateRoomInput!): Room!
+  createRoom(createRoomInput: CreateRoomInput!): RoomResponse!
 
   """Actualizar una habitación"""
-  updateRoom(updateRoomInput: UpdateRoomInput!): Room!
+  updateRoom(updateRoomInput: UpdateRoomInput!): RoomResponse!
 
   """Eliminar una habitación"""
-  removeRoom(id: Int!): Room!
+  removeRoom(id: Int!): RoomResponse!
 }
 
 input CreateComfortInput {
@@ -342,12 +380,24 @@ input UpdateCategoryInput {
 }
 
 input CreateRoomInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  categoryId: Int!
+  name: String!
+  maintenance: Boolean
+  description: String
+  userCreateAt: String
+  createDateAt: DateTime
+  userUpdateAt: String
+  updateDateAt: DateTime
 }
 
 input UpdateRoomInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  categoryId: Int
+  name: String
+  maintenance: Boolean
+  description: String
+  userCreateAt: String
+  createDateAt: DateTime
+  userUpdateAt: String
+  updateDateAt: DateTime
   id: Int!
 }

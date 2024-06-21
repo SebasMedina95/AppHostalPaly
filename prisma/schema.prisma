@@ -73,6 +73,7 @@ model TBL_ROOMS {
   name         String    @unique @db.VarChar(25)
   maintenance  Boolean   @default(false)
   description  String?   @db.VarChar(5000)
+  status       Boolean   @default(true)
   userCreateAt String?
   createDateAt DateTime?
   userUpdateAt String?
