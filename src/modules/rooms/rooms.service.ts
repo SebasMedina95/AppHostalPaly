@@ -112,8 +112,8 @@ export class RoomsService {
         itemCount = await this.prisma.tBL_ROOMS.count({
           where: {
             OR: [
-                { name: { contains: search, mode: 'insensitive' } },
-                { description: { contains: search, mode: 'insensitive' } },
+              { name: { contains: search, mode: 'insensitive' } },
+              { description: { contains: search, mode: 'insensitive' } },
             ],
             AND: [
                 { status: true }
@@ -133,7 +133,7 @@ export class RoomsService {
           orderBy: { id: order }
         });
 
-        itemCount = await this.prisma.tBL_CATEGORIES.count({
+        itemCount = await this.prisma.tBL_ROOMS.count({
           where: { status: true },
         });
 

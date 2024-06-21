@@ -5,7 +5,7 @@ import { PageMetaInput } from "../../../helpers/pagination/dto/page-meta.input";
 import { Room } from "../entities/room.entity";
 import { Category } from "../../../modules/categories/entities/category.entity";
 
-@ObjectType()
+//@ObjectType()
 //export class BuildListRoomResponse {
 
     // @Field( () => Room )

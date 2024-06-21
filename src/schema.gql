@@ -169,7 +169,7 @@ type CategoryResponseWithComforts {
 
 type Room {
   """Id autoincrementado para la PK"""
-  id: Int!
+  id: ID!
 
   """Id de la categoría"""
   categoryId: Int!
