@@ -242,7 +242,10 @@ type Query {
   findAllRooms(pageOptionsArgs: PageOptionsArgs!): RoomPaginationResponse!
 
   """Obtener una habitación por ID"""
-  findOneRoom(id: Int!): [RoomResponse!]!
+  findOneRoom(id: Int!): Room!
+
+  """Obtener habitaciones por categoría"""
+  findRoomsByCategory(id: Int!): [Room!]!
 }
 
 input PageOptionsArgs {
@@ -291,10 +294,10 @@ type Mutation {
   createRoom(createRoomInput: CreateRoomInput!): RoomResponse!
 
   """Actualizar una habitación"""
-  updateRoom(updateRoomInput: UpdateRoomInput!): RoomResponse!
+  updateRoom(updateRoomInput: UpdateRoomInput!): Room!
 
   """Eliminar una habitación"""
-  removeRoom(id: Int!): RoomResponse!
+  removeRoom(id: Int!): Room!
 }
 
 input CreateComfortInput {

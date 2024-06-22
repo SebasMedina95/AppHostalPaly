@@ -160,27 +160,168 @@ export class RoomsService {
     
   }
 
-  async findOne(id: number): Promise<RoomResponse | CustomError> {
+  async findOne(id: number): Promise<Room | CustomError> {
     
-    throw new Error("Método no implementado");
+    const logger = new Logger('RoomsService - findOne');
+
+    try {
+
+      const getRoom = await this.prisma.tBL_ROOMS.findFirst({
+        where: {
+          AND: [
+            { id },
+            { status: true }
+          ]
+        },
+        include: {
+          category: true
+        }
+      })
+
+      if( getRoom == null ) return CustomError.notFoundError(`No se encontró habitación con el ID ${id}`);
+
+      return getRoom;
+      
+    } catch (error) {
+
+      logger.log(`Ocurrió un error al intentar obtener una habitación por ID: ${error}`);
+      throw CustomError.internalServerError(`${error}`);
+      
+    } finally {
+      
+      logger.log(`Obtener una habitación por ID finalizada`);
+      await this.prisma.$disconnect();
+
+    }
     
   }
 
-  async update(id: number, updateRoomInput: UpdateRoomInput): Promise<RoomResponse | CustomError> {
+  async update(id: number, 
+               updateRoomInput: UpdateRoomInput,
+               user: User): Promise<Room | CustomError> {
     
-    throw new Error("Método no implementado");
+    const logger = new Logger('RoomsService - update');
+    const { name, description, maintenance } = updateRoomInput;
+
+    try {
+
+      //Verificación del ID
+      const existRoom = await this.prisma.tBL_ROOMS.findFirst({
+        where: { id }
+      });
+
+      if( existRoom == null ) 
+        return CustomError.notFoundError(`No se encontró habitación con el ID ${id}`);
+
+      //Verificación del nombre y descripción
+      const existNameRoom = await this.prisma.tBL_ROOMS.findMany({
+        where: { name }, 
+      });
+
+      //Validamos que no se repita pero en términos de un ID diferente
+      if( existNameRoom.length > 0 ){
+        if( existNameRoom[0].id != id ){
+          return CustomError.badRequestError("Ya existe el nombre de habitación");
+        }
+      }
+
+      const updateRoom = await this.prisma.tBL_ROOMS.update({
+        where: { id },
+        data: {
+          name,
+          description,
+          maintenance,
+          userUpdateAt: user.email,
+          updateDateAt: new Date(),
+        }
+      });
+
+      return updateRoom;
+      
+    } catch (error) {
+
+      logger.log(`Ocurrió un error al intentar actualizar una habitación por ID: ${error}`);
+      throw CustomError.internalServerError(`${error}`);
+      
+    } finally {
+      
+      logger.log(`Actualización de una habitación por ID finalizada`);
+      await this.prisma.$disconnect();
+
+    }
     
   }
 
-  async remove(id: number): Promise<RoomResponse | CustomError> {
+  async remove(id: number, user: User): Promise<Room | CustomError> {
     
-    throw new Error("Método no implementado");
+    const logger = new Logger('RoomsService - remove');
+
+    try {
+
+      //Verificación del ID
+      const existRoom = await this.prisma.tBL_ROOMS.findFirst({
+        where: { id }
+      });
+
+      if( existRoom == null ) 
+        return CustomError.notFoundError(`No se encontró habitación con el ID ${id}`);
+
+      const updateRoom = await this.prisma.tBL_ROOMS.update({
+        where: { id },
+        data: { 
+          userUpdateAt: user.email,
+          updateDateAt: new Date(),
+          status: false
+        }
+      });
+
+      return updateRoom;
+      
+    } catch (error) {
+
+      logger.log(`Ocurrió un error al intentar remover una habitación por ID: ${error}`);
+      throw CustomError.internalServerError(`${error}`);
+      
+    } finally {
+      
+      logger.log(`Eliminación lógica una comodidad por ID finalizada`);
+      await this.prisma.$disconnect();
+
+    }
     
   }
 
-  async findByCategory(id: number): Promise<RoomResponse | CustomError> {
+  async findByCategory(id: number): Promise<Room[] | CustomError> {
     
-    throw new Error("Método no implementado");
+    const logger = new Logger('RoomsService - findByCategory');
+
+    try {
+
+      const getRoomsByCategoy = await this.prisma.tBL_ROOMS.findMany({
+        where: {
+          AND: [
+            { categoryId: id },
+            { status: true }
+          ]
+        },
+        include: {
+          category: true
+        }
+      })
+
+      return getRoomsByCategoy;
+      
+    } catch (error) {
+
+      logger.log(`Ocurrió un error al intentar obtener el listado de habitaciones por categoría: ${error}`);
+      throw CustomError.internalServerError(`${error}`);
+      
+    } finally {
+      
+      logger.log(`Obtener una habitación por ID de categoría finalizada`);
+      await this.prisma.$disconnect();
+
+    }
     
   }
 

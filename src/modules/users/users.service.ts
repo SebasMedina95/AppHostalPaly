@@ -162,7 +162,7 @@ export class UsersService {
 
   async findOneById(id: number): Promise<User | CustomError> {
     
-    const logger = new Logger('UsersService - findOneByEmail')
+    const logger = new Logger('UsersService - findOneById')
     
     try {
 

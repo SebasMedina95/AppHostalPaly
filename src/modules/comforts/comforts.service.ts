@@ -228,7 +228,7 @@ export class ComfortsService {
       
     } catch (error) {
 
-      logger.log(`Ocurrió un error al intentar obtener una comodidad por ID: ${error}`);
+      logger.log(`Ocurrió un error al intentar actualizar una comodidad por ID: ${error}`);
       throw CustomError.internalServerError(`${error}`);
       
     } finally {
@@ -269,7 +269,7 @@ export class ComfortsService {
       
     } catch (error) {
 
-      logger.log(`Ocurrió un error al intentar obtener una comodidad por ID: ${error}`);
+      logger.log(`Ocurrió un error al intentar remover una comodidad por ID: ${error}`);
       throw CustomError.internalServerError(`${error}`);
       
     } finally {

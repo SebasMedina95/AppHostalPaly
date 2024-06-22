@@ -342,7 +342,7 @@ export class CategoriesService {
       
     } catch (error) {
 
-      logger.log(`Ocurrió un error al intentar obtener una categoría por ID: ${error}`);
+      logger.log(`Ocurrió un error al intentar actualizar una categoría por ID: ${error}`);
       throw CustomError.internalServerError(`${error}`);
       
     } finally {
@@ -380,7 +380,7 @@ export class CategoriesService {
       
     } catch (error) {
 
-      logger.log(`Ocurrió un error al intentar obtener una categoría por ID: ${error}`);
+      logger.log(`Ocurrió un error al intentar remover una categoría por ID: ${error}`);
       throw CustomError.internalServerError(`${error}`);
       
     } finally {

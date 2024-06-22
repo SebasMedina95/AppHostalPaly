@@ -48,39 +48,39 @@ export class RoomsResolver {
 
   }
 
-  @Query(() => RoomResponse, { name: 'findOneRoom', description: "Obtener una habitación por ID" })
+  @Query(() => Room, { name: 'findOneRoom', description: "Obtener una habitación por ID" })
   async findOne(
     @Args('id', { type: () => Int }) id: number
-  ): Promise<RoomResponse | CustomError> {
+  ): Promise<Room | CustomError> {
 
     return this.roomsService.findOne(id);
 
   }
 
-  @Mutation(() => RoomResponse, { name: 'updateRoom', description: "Actualizar una habitación" })
+  @Mutation(() => Room, { name: 'updateRoom', description: "Actualizar una habitación" })
   async updateRoom(
     @Args('updateRoomInput') updateRoomInput: UpdateRoomInput,
     @CurrentUser([ ValidRoles.EMPLOYEE_NV1, ValidRoles.ADMIN ]) user: User
-  ): Promise<RoomResponse | CustomError> {
+  ): Promise<Room | CustomError> {
 
-    return this.roomsService.update(updateRoomInput.id, updateRoomInput);
+    return this.roomsService.update(updateRoomInput.id, updateRoomInput, user);
 
   }
 
-  @Mutation(() => RoomResponse, { name: 'removeRoom', description: "Eliminar una habitación" })
+  @Mutation(() => Room, { name: 'removeRoom', description: "Eliminar una habitación" })
   async removeRoom(
     @Args('id', { type: () => Int }) id: number,
     @CurrentUser([ ValidRoles.EMPLOYEE_NV1, ValidRoles.ADMIN ]) user: User
-  ): Promise<RoomResponse | CustomError> {
+  ): Promise<Room | CustomError> {
 
-    return this.roomsService.remove(id);
+    return this.roomsService.remove(id, user);
 
   }
 
-  @Query(() => [RoomResponse], { name: 'findOneRoom', description: "Obtener una habitación por ID" })
+  @Query(() => [Room], { name: 'findRoomsByCategory', description: "Obtener habitaciones por categoría" })
   async findByCategory(
     @Args('id', { type: () => Int }) id: number
-  ): Promise<RoomResponse | CustomError> {
+  ): Promise<Room[] | CustomError> {
 
     return this.roomsService.findByCategory(id);
 
