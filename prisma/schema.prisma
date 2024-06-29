@@ -52,20 +52,21 @@ model TBL_COMFORTS {
 }
 
 model TBL_USERS {
-  id               Int      @id @default(autoincrement())
-  names            String   @db.VarChar(150)
-  lastnames        String   @db.VarChar(150)
-  email            String   @unique @db.VarChar(150)
-  emailValidated   Boolean  @default(false)
-  password         String   @db.VarChar(100)
-  roles            String[] @default(["USER"])
-  gender           String   @db.VarChar(1)
-  img              String?  @default("default.png")
+  id               Int                @id @default(autoincrement())
+  names            String             @db.VarChar(150)
+  lastnames        String             @db.VarChar(150)
+  email            String             @unique @db.VarChar(150)
+  emailValidated   Boolean            @default(false)
+  password         String             @db.VarChar(100)
+  roles            String[]           @default(["USER"])
+  gender           String             @db.VarChar(1)
+  img              String?            @default("default.png")
   phone1           String?
   phone2           String?
-  isBlock          Boolean  @default(false)
+  isBlock          Boolean            @default(false)
   userWhoBlock     String?
   passwordRecovery String?
+  TBL_RESERVATIONS TBL_RESERVATIONS[]
 }
 
 model TBL_ROOMS {
@@ -79,8 +80,9 @@ model TBL_ROOMS {
   userUpdateAt String?
   updateDateAt DateTime?
 
-  category   TBL_CATEGORIES @relation(fields: [categoryId], references: [id])
-  categoryId Int
+  category         TBL_CATEGORIES     @relation(fields: [categoryId], references: [id])
+  categoryId       Int
+  TBL_RESERVATIONS TBL_RESERVATIONS[]
 }
 
 model TBL_DTL_COMFORTS_CATEGORIES {
@@ -103,15 +105,45 @@ model TBL_DTL_IMAGES_CATEGORIES {
 }
 
 model TBL_PLANS {
-  id              Int       @id @default(autoincrement())
-  type            String    @unique @db.VarChar(40)
-  urlImage        String?   @default("default.png")
-  description     String?   @unique @db.VarChar(1000)
-  highSeasonPrice Float
-  LowSeasonPrice  Float
-  status          Boolean   @default(true)
-  userCreateAt    String?
-  createDateAt    DateTime?
-  userUpdateAt    String?
-  updateDateAt    DateTime?
+  id               Int                @id @default(autoincrement())
+  type             String             @unique @db.VarChar(40)
+  urlImage         String?            @default("default.png")
+  description      String?            @unique @db.VarChar(1000)
+  highSeasonPrice  Float
+  LowSeasonPrice   Float
+  status           Boolean            @default(true)
+  userCreateAt     String?
+  createDateAt     DateTime?
+  userUpdateAt     String?
+  updateDateAt     DateTime?
+  TBL_RESERVATIONS TBL_RESERVATIONS[]
+}
+
+model TBL_RESERVATIONS {
+  id                     Int       @id @default(autoincrement())
+  reservationCode        String    @unique @db.VarChar(50)
+  valueReservation       Float
+  transactionNumber      String?   @default("Pendiente") @db.VarChar(250)
+  orderTransaction       String?   @default("Pendiente") @db.VarChar(250)
+  typeTransaction        String?   @default("Pendiente") @db.VarChar(250)
+  paymentMethod          String?   @default("Pendiente") @db.VarChar(250)
+  descriptionReservation String    @db.VarChar(1000)
+  initialDate            DateTime
+  endDate                DateTime
+  daysNumber             Int
+  statusTransaction      String
+  dateTransactionFinal   DateTime?
+  userCreateAt           String?
+  createDateAt           DateTime?
+  userUpdateAt           String?
+  updateDateAt           DateTime?
+
+  room   TBL_ROOMS @relation(fields: [roomId], references: [id])
+  roomId Int
+
+  user   TBL_USERS @relation(fields: [userId], references: [id])
+  userId Int
+
+  plan   TBL_PLANS @relation(fields: [planId], references: [id])
+  planId Int
 }
