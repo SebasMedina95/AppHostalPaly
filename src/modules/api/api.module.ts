@@ -9,6 +9,7 @@ import { UploadsService } from './uploads/upload.service';
 import { FilesModule } from 'src/helpers/uploads/files.module';
 import { CategoriesModule } from '../categories/categories.module';
 import { UsersModule } from '../users/users.module';
+import { PlansModule } from '../plans/plans.module';
 
 
 @Module({
@@ -24,7 +25,8 @@ import { UsersModule } from '../users/users.module';
     PrismaModule,
     FilesModule,
     CategoriesModule,
-    UsersModule
+    UsersModule,
+    PlansModule
   ]
 })
 export class ApiModule {}

@@ -7,7 +7,8 @@ import { Controller,
          UploadedFiles,
          UseGuards, 
          UseInterceptors} from "@nestjs/common";
-import { FileInterceptor, FilesInterceptor } from "@nestjs/platform-express";
+import { FileInterceptor,
+         FilesInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { extname } from "path";
 
@@ -18,6 +19,7 @@ import { JwtAuthGuard } from "../../../modules/auth/guards/jwt-auth.guard";
 import { CurrentUser } from "../../../modules/auth/decorators/current-user.decorator";
 import { CategoriesService } from "../../../modules/categories/categories.service";
 import { UsersService } from "../../../modules/users/users.service";
+import { PlansService } from "../../../modules/plans/plans.service";
 
 import { CustomError } from "../../../helpers/errors/custom.error";
 import { FilesService } from "../../../helpers/uploads/files.service";
@@ -26,9 +28,9 @@ import { FileTypeValidator } from "../../../helpers/validators/file-type-validat
 
 import { ValidRoles } from "../../../constants/roles.enum";
 import { IErrorImages } from "./interfaces/images.interfaces";
-import { IResponseChargeImageUser, IResponseChargeRooms } from "./interfaces/charge-rooms.interface";
-
-
+import { IResponseChargeImagePlan,
+         IResponseChargeImageUser,
+         IResponseChargeRooms } from "./interfaces/charge-rooms.interface";
 
 @Controller('uploads')
 @UseGuards( JwtAuthGuard ) //? El JwtAuthGuard es mi Guard personalizado para GraphQL
@@ -38,7 +40,8 @@ export class UploadsController {
         private readonly uploadsService: UploadsService,
         private readonly cloudinaryService: FilesService,
         private readonly categoryService: CategoriesService,
-        private readonly userService: UsersService
+        private readonly userService: UsersService,
+        private readonly planService: PlansService,
     ) {}
 
     @Post('rooms/:id')
@@ -148,6 +151,18 @@ export class UploadsController {
             throw CustomError.badRequestError("No encontramos un usuario para anexar la imagen");
         }
 
+        //Borramos la imagen que esté asociada si es el caso
+        const getUrlImageExist = getUser.img;
+        if( getUrlImageExist != null || getUrlImageExist != "default.png" ){
+            const arrayName = getUrlImageExist.split('/'); //La url completa separa por /
+            const getName = arrayName[arrayName.length - 1]; //Al final tenemos la imagen con su extension
+            const [ name , ext ] = getName.split('.'); //Separo la extensión de la imagen y lo que me queda es el nombre de la 
+                                                        //imagen, el cual, viene siendo en últimas el mismo id que asigna cloudinary
+
+            //Borramos con una función propia de cloudinary
+            await this.cloudinaryService.deleteFile(name);
+        }
+
         //Validamos formatos Validamos tamaños
         const maxFileSizeValidator = new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }); // 4 MB
         const fileTypeValidator = new FileTypeValidator({ fileType: '.(png|jpg|jpeg)' });
@@ -191,6 +206,86 @@ export class UploadsController {
 
         }
 
+    }
+
+    @Post('plan/:id')
+    @UseInterceptors(FileInterceptor('imagePlan'))
+    async uploadImagePlan(
+        @Param('id') id: number,
+        @CurrentUser([ ValidRoles.EMPLOYEE_NV1, ValidRoles.ADMIN ]) user: User,
+        @UploadedFile() file: Express.Multer.File,
+    ): Promise<IResponseChargeImagePlan | CustomError> {
+
+        const logger = new Logger('UploadsController - uploadImagePlan');
+
+        //Validamos que vengan archivos
+        if( !file || file == null || file == undefined ){
+            logger.error(`No se ha proporcionado ninguna imagen para usar la funcionalidad`);
+            throw CustomError.badRequestError("No se ha proporcionado ninguna imagen para usar la funcionalidad");
+        }
+
+        //Traigamos el plan asociado
+        const getPlan = await this.planService.findOne(id);
+
+        if( getPlan instanceof CustomError ){
+            throw CustomError.badRequestError("No encontramos un plan para anexar la imagen");
+        }
+
+        //Borramos la imagen que esté asociada si es el caso
+        const getUrlImageExist = getPlan.urlImage;
+        if( getUrlImageExist != null || getUrlImageExist != "default.png" ){
+            const arrayName = getUrlImageExist.split('/'); //La url completa separa por /
+            const getName = arrayName[arrayName.length - 1]; //Al final tenemos la imagen con su extension
+            const [ name , ext ] = getName.split('.'); //Separo la extensión de la imagen y lo que me queda es el nombre de la 
+                                                        //imagen, el cual, viene siendo en últimas el mismo id que asigna cloudinary
+
+            //Borramos con una función propia de cloudinary
+            await this.cloudinaryService.deleteFile(name);
+        }
+
+        //Validamos formatos Validamos tamaños
+        const maxFileSizeValidator = new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }); // 4 MB
+        const fileTypeValidator = new FileTypeValidator({ fileType: '.(png|jpg|jpeg)' });
+
+        if (!maxFileSizeValidator.isValid(file)) {
+            return {
+                information: "El tamaño de la imagen no puede exceder los 4MB",
+                plan: getPlan,
+                image: file.originalname
+            }
+        }
+        
+        if (!fileTypeValidator.isValid(file)) {
+            return {
+                information: "El tipo de archivo de la imagen no puede ser diferente a .(png|jpg|jpeg)",
+                plan: getPlan,
+                image: file.originalname
+            }
+        }
+
+        const executeFile = await this.cloudinaryService.uploadFile(file);
+        const getUrl: string = executeFile.url;
+
+        const saveImage = await this.uploadsService.uploadImagePlan(id, getUrl);
+
+        if( saveImage ){
+
+            return {
+                information: "Imagen actualizada con éxito",
+                plan: getPlan,
+                image: file.originalname
+            }
+
+        }else{
+
+            return {
+                information: "Ocurrió un error al intentar actualizar la imagen",
+                plan: getPlan,
+                image: file.originalname
+            }
+
+        }
+        
     }
 
 }

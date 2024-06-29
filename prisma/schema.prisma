@@ -101,3 +101,17 @@ model TBL_DTL_IMAGES_CATEGORIES {
   category     TBL_CATEGORIES @relation(fields: [categoryId], references: [id])
   categoryId   Int
 }
+
+model TBL_PLANS {
+  id              Int       @id @default(autoincrement())
+  type            String    @unique @db.VarChar(40)
+  urlImage        String?   @default("default.png")
+  description     String?   @unique @db.VarChar(1000)
+  highSeasonPrice Float
+  LowSeasonPrice  Float
+  status          Boolean   @default(true)
+  userCreateAt    String?
+  createDateAt    DateTime?
+  userUpdateAt    String?
+  updateDateAt    DateTime?
+}

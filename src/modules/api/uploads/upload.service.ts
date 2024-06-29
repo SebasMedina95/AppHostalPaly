@@ -71,4 +71,28 @@ export class UploadsService {
 
     }
 
+    async uploadImagePlan(
+        id: number, 
+        urlImage: string
+    ): Promise<boolean | CustomError>{
+
+        let band: boolean = true;
+
+        try {
+
+            await this.prisma.tBL_PLANS.update({
+                where: { id },
+                data: {
+                    urlImage
+                }
+            })
+            
+        } catch (error) {
+            band = false;
+        }
+
+        return band;
+
+    }
+
 }

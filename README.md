@@ -84,15 +84,14 @@ $ npm run migration:rollback
 GET  (Sin Body, ejecutado por URL a través del Link enviado)     - localhost:5500/api-hostalpaly/v1/email/verify-email/:idUsuario
 GET  (Sin Body, ejecutado por URL a través del Link enviado)     - localhost:5500/api-hostalpaly/v1/email/recovery-passwor/`:password-:idUsuario`
 POST (Con Body en Form Data y Adjuntos [Propiedad: imagesRooms]) - localhost:5500/api-hostalpaly/v1/uploads/rooms/:idCategory
-POST (cON Body en Form Data y Adjuntos [Propiedad: imageUser])   - localhost:5500/api-hostalpaly/v1/uploads/user/:idUsuario
+POST (Con Body en Form Data y Adjuntos [Propiedad: imageUser])   - localhost:5500/api-hostalpaly/v1/uploads/user/:idUsuario
+POST (Con Body en Form Data y Adjuntos [Propiedad: imagePlan])   - localhost:5500/api-hostalpaly/v1/uploads/plan/:idPlan
 ```
 
 ## Pendiente ##
 DEBEMOS REVISAR VARIAS COSAS:
 
-1. DESCRIPCIONES DE LOS RESOLVERS PARA QUE EN EL APOLLO SE NOS VEA MÁS DETALLADA EL PORQUE DE LAS COSAS Y COMO USARLAS.
-2. TERMINAR EN EL AUTH LA RECUPERACIÓN DE LA CONTRASEÑA PERDIDA
-3. AJUSTAR LA DOCUMENTACIÓN PARA QUE SEA CLARO CUANDO Y COMO DEBEMOS USAR:
+1. AJUSTAR LA DOCUMENTACIÓN PARA QUE SEA CLARO CUANDO Y COMO DEBEMOS USAR:
     - END POINT API REST PARA CARGAR VARIAS IMAGENES PARA CATEGORÍAS AL TIEMPO
     - END POINT API REST PARA CARGAR UNA IMAGEN PARA EL AVATAR DEL USUARIO
     - END POINT API REST PARA ENVIAR EMAIL DE VERIFICACIÓN DE CUENTA

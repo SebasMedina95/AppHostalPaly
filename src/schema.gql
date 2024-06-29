@@ -210,6 +210,41 @@ type RoomPaginationResponse {
   meta: PageMetaInput!
 }
 
+type Plan {
+  """Id del Plan"""
+  id: Int!
+
+  """Tipo de Plan"""
+  type: String!
+
+  """Url imagen del Plan"""
+  urlImage: String
+
+  """Descripción del Plan"""
+  description: String!
+
+  """Precio Plan en Temporada Alta"""
+  highSeasonPrice: Float!
+
+  """Precio Plan en Temporada Baja"""
+  LowSeasonPrice: Float!
+
+  """Estado del Plan"""
+  status: Boolean!
+
+  """Email del usuario que registra"""
+  userCreateAt: String!
+
+  """Fecha de Registro"""
+  createDateAt: DateTime!
+
+  """Email del usuario que actualiza"""
+  userUpdateAt: String!
+
+  """Fecha de Actuaización"""
+  updateDateAt: DateTime!
+}
+
 type Query {
   """Método inicial para las configuraciones GraphQL"""
   hello: String!
@@ -246,6 +281,12 @@ type Query {
 
   """Obtener habitaciones por categoría"""
   findRoomsByCategory(id: Int!): [Room!]!
+
+  """Listar planes con paginación y filtro"""
+  findAllPlan: [Plan!]!
+
+  """Obtener plan por ID"""
+  findOnePlan(id: Int!): Plan!
 }
 
 input PageOptionsArgs {
@@ -298,6 +339,15 @@ type Mutation {
 
   """Eliminar una habitación"""
   removeRoom(id: Int!): Room!
+
+  """Crear un nuevo plan"""
+  createPlan(createPlanInput: CreatePlanInput!): Plan!
+
+  """Actualizar un plan"""
+  updatePlan(updatePlanInput: UpdatePlanInput!): Plan!
+
+  """Eliminar lógicamente un plan"""
+  removePlan(id: Int!): Plan!
 }
 
 input CreateComfortInput {
@@ -398,6 +448,29 @@ input UpdateRoomInput {
   name: String
   maintenance: Boolean
   description: String
+  userCreateAt: String
+  createDateAt: DateTime
+  userUpdateAt: String
+  updateDateAt: DateTime
+  id: Int!
+}
+
+input CreatePlanInput {
+  type: String!
+  description: String!
+  highSeasonPrice: Float!
+  LowSeasonPrice: Float!
+  userCreateAt: String
+  createDateAt: DateTime
+  userUpdateAt: String
+  updateDateAt: DateTime
+}
+
+input UpdatePlanInput {
+  type: String
+  description: String
+  highSeasonPrice: Float
+  LowSeasonPrice: Float
   userCreateAt: String
   createDateAt: DateTime
   userUpdateAt: String
