@@ -245,6 +245,11 @@ type Plan {
   updateDateAt: DateTime!
 }
 
+type PlanPaginationResponse {
+  data: [Plan!]!
+  meta: PageMetaInput!
+}
+
 type Query {
   """Método inicial para las configuraciones GraphQL"""
   hello: String!
@@ -283,7 +288,7 @@ type Query {
   findRoomsByCategory(id: Int!): [Room!]!
 
   """Listar planes con paginación y filtro"""
-  findAllPlan: [Plan!]!
+  findAllPlan(pageOptionsArgs: PageOptionsArgs!): PlanPaginationResponse!
 
   """Obtener plan por ID"""
   findOnePlan(id: Int!): Plan!

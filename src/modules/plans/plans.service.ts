@@ -197,7 +197,60 @@ export class PlansService {
     user: User
   ): Promise<Plan | CustomError> {
 
-    throw new Error(`Método sin implementar aún`);
+    const logger = new Logger('PlansService - update');
+    const { type, description, highSeasonPrice, LowSeasonPrice } = updatePlanInput;
+
+    try {
+
+      //Verificación del ID
+      const existPlan = await this.prisma.tBL_PLANS.findFirst({
+        where: { id }
+      });
+
+      if( existPlan == null ) return CustomError.notFoundError(`No se encontró plan con el ID ${id}`);
+
+      //Verificación del nombre y descripción
+      const existDescriptionAndNamePlan = await this.prisma.tBL_PLANS.findMany({
+        where: {
+          OR: [
+            { type },
+            { description }
+          ]
+        }
+      })
+
+      //Validamos que no se repita pero en términos de un ID diferente
+      if( existDescriptionAndNamePlan.length > 0 ){
+        if( existDescriptionAndNamePlan[0].id != id ){
+          return CustomError.badRequestError("Ya existe el nombre de plan y/o la descripción");
+        }
+      }
+
+      const updatePlan = await this.prisma.tBL_PLANS.update({
+        where: { id },
+        data: {
+          type,
+          description,
+          highSeasonPrice,
+          LowSeasonPrice,
+          userUpdateAt: user.email,
+          updateDateAt: new Date(),
+        }
+      });
+
+      return updatePlan;
+      
+    } catch (error) {
+
+      logger.log(`Ocurrió un error al intentar actualizar el plan por ID: ${error}`);
+      throw CustomError.internalServerError(`${error}`);
+      
+    } finally {
+      
+      logger.log(`Actualización de el plan por ID finalizada`);
+      await this.prisma.$disconnect();
+
+    }
 
   }
 
@@ -206,7 +259,39 @@ export class PlansService {
     user: User
   ): Promise<Plan | CustomError> {
 
-    throw new Error(`Método sin implementar aún`);
+    const logger = new Logger('PlansService - remove');
+
+    try {
+
+      //Verificación del ID
+      const existPlan = await this.prisma.tBL_PLANS.findFirst({
+        where: { id }
+      });
+
+      if( existPlan == null ) return CustomError.notFoundError(`No se encontró plan con el ID ${id}`);
+
+      const updateComfort = await this.prisma.tBL_PLANS.update({
+        where: { id },
+        data: { 
+          userUpdateAt: user.email,
+          updateDateAt: new Date(),
+          status: false
+        }
+      });
+
+      return updateComfort;
+      
+    } catch (error) {
+
+      logger.log(`Ocurrió un error al intentar remover un plan por ID: ${error}`);
+      throw CustomError.internalServerError(`${error}`);
+      
+    } finally {
+      
+      logger.log(`Eliminación lógica un plan por ID finalizada`);
+      await this.prisma.$disconnect();
+
+    }
 
   }
 }

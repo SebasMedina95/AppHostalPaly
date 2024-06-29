@@ -38,9 +38,10 @@ export class PlansResolver {
 
   }
 
-  @Query(() => [Plan], { name: 'findAllPlan', description: "Listar planes con paginación y filtro" })
+  @Query(() => PlanPaginationResponse, { name: 'findAllPlan', description: "Listar planes con paginación y filtro" })
   async findAll(
-    pageOptionsArgs: PageOptionsArgs
+    @Args('pageOptionsArgs') pageOptionsArgs: PageOptionsArgs,
+    @CurrentUser([ ValidRoles.EMPLOYEE_NV1, ValidRoles.ADMIN ]) user: User
   ): Promise<PlanPaginationResponse> {
 
     return this.plansService.findAll(pageOptionsArgs);
