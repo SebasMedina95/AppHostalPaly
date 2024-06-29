@@ -18,6 +18,7 @@ import { EmailVerifyModule } from './modules/api/emails/email-verify.module';
 import { RoomsModule } from './modules/rooms/rooms.module';
 import { ApiModule } from './modules/api/api.module';
 import { PlansModule } from './modules/plans/plans.module';
+import { ReservationsModule } from './modules/reservations/reservations.module';
 
 @Module({
   imports: [
@@ -52,7 +53,7 @@ import { PlansModule } from './modules/plans/plans.module';
     EmailVerifyModule,
     RoomsModule,
     ApiModule, //Este módulo controlará peticiones API RESTful (Funciones muy específicas)
-    FilesModule, PlansModule, //Para la subida de archivos a Cloudinary
+    FilesModule, PlansModule, ReservationsModule, //Para la subida de archivos a Cloudinary
 
   ],
   controllers: [],

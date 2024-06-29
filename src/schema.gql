@@ -250,6 +250,11 @@ type PlanPaginationResponse {
   meta: PageMetaInput!
 }
 
+type Reservation {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 type Query {
   """Método inicial para las configuraciones GraphQL"""
   hello: String!
@@ -292,6 +297,8 @@ type Query {
 
   """Obtener plan por ID"""
   findOnePlan(id: Int!): Plan!
+  reservations: [Reservation!]!
+  reservation(id: Int!): Reservation!
 }
 
 input PageOptionsArgs {
@@ -353,6 +360,9 @@ type Mutation {
 
   """Eliminar lógicamente un plan"""
   removePlan(id: Int!): Plan!
+  createReservation(createReservationInput: CreateReservationInput!): Reservation!
+  updateReservation(updateReservationInput: UpdateReservationInput!): Reservation!
+  removeReservation(id: Int!): Reservation!
 }
 
 input CreateComfortInput {
@@ -480,5 +490,16 @@ input UpdatePlanInput {
   createDateAt: DateTime
   userUpdateAt: String
   updateDateAt: DateTime
+  id: Int!
+}
+
+input CreateReservationInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateReservationInput {
+  """Example field (placeholder)"""
+  exampleField: Int
   id: Int!
 }
