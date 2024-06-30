@@ -16,7 +16,34 @@ export class FilesService {
       (resolve, reject) => {
         
         const uploadStream = cloudinary.uploader.upload_stream(
-            
+          
+          (error, result) => {
+
+            if (error) return reject(error);
+            resolve(result);
+
+          },
+
+        );
+        
+        //Este es el archivo
+        streamifier.createReadStream(file.buffer).pipe(uploadStream);
+
+      }
+
+    );
+
+  }
+
+  //El mismo crear de arriba pero SIN asignación automática de nombre
+  uploadFileWithName(file: Express.Multer.File, publicId?: string): Promise<CloudinaryResponse> {
+
+    return new Promise<CloudinaryResponse>(
+      
+      (resolve, reject) => {
+        
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { public_id: publicId },
           (error, result) => {
 
             if (error) return reject(error);

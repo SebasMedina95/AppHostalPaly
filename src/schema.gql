@@ -363,6 +363,9 @@ type Mutation {
   createReservation(createReservationInput: CreateReservationInput!): Reservation!
   updateReservation(updateReservationInput: UpdateReservationInput!): Reservation!
   removeReservation(id: Int!): Reservation!
+
+  """Ejecutar SEED para Poblar la BD"""
+  executeSeed: Boolean!
 }
 
 input CreateComfortInput {
