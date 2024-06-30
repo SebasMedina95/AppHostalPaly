@@ -10,6 +10,7 @@ import { FilesService } from '../../helpers/uploads/files.service';
 
 import { SEED_USERS } from './data/users.data';
 import { SEED_COMFORTS } from './data/comforts.data';
+import { SEED_PLANS } from './data/plans.data';
 
 
 @Injectable()
@@ -55,6 +56,12 @@ export class SeedService {
         const seedUser = await this.seedUsers();
         if( !seedUser ){
             logger.log(`Ocurrió un error ejecutando el SEED de USUARIOS`);
+            return false;
+        }
+
+        const seedPlan = await this.seedPlans();
+        if( !seedPlan ){
+            logger.log(`Ocurrió un error ejecutando el SEED de PLANES`);
             return false;
         }
 
@@ -138,8 +145,6 @@ export class SeedService {
 
         //8. Usuarios. //*NOTA: También eliminar avatar de Cloudinary
         const getUsers = await this.prisma.tBL_USERS.findMany({});
-
-        console.log({"getUsers tamaño => " : getUsers.length})
 
         if( getUsers.length > 0 ){
             for (const iterDelete of getUsers) {
@@ -259,7 +264,59 @@ export class SeedService {
     }
 
     async seedPlans(): Promise<boolean> {
+
         const logger = new Logger('seedPlans');
+        await this.prisma.tBL_PLANS.createMany({ data: SEED_PLANS });
+
+        //Vamos a cargar las imágenes
+        const userImagesDir = path.join(__dirname, '../../../src/modules/seed/images/plans');
+        const imageFiles = fs.readdirSync(userImagesDir);
+        let urlsCloudinary: string[] = [];
+
+        for (const file of imageFiles){
+
+            const filePath = path.join(userImagesDir, file);
+            const fileContent = fs.readFileSync(filePath);
+
+            // Simular Express.Multer.File ya que recibimos es un Buffer en este caso
+            const multerFile: Express.Multer.File = {
+                fieldname: file,
+                originalname: file,
+                encoding: '7bit',
+                mimetype: 'image/jpeg', // Cambia esto según el tipo de archivo
+                size: fileContent.length,
+                buffer: fileContent,
+                destination: '',
+                filename: '',
+                path: '',
+                stream: fs.createReadStream(filePath),
+            };
+
+            const uploadResult = await this.cloudinaryService.uploadFileWithName(multerFile, `${file}p`);
+            urlsCloudinary.push(uploadResult.url);
+
+        }
+
+        //Ahora adjuntemos las imágenes a los registros:
+        for (const iterImages of urlsCloudinary) {
+            //Obtengamos el nombre de la imagen
+            const arrayName = iterImages.split('/');
+            const getName = arrayName[arrayName.length - 1];
+            const [ name , ext ] = getName.split('.');
+
+            //Hacemos esta conversión porque los nombres son del tipo #p.jpg/png
+            const number = name.match(/\d+/)[0]; // Extrae el número
+            const letter = name.match(/[a-zA-Z]/)[0]; // Extrae la letra (quedará p)
+
+            const nameNumeric: number = Number(number);
+
+            await this.prisma.tBL_PLANS.update({
+                where: { id: nameNumeric },
+                data: { urlImage: iterImages } 
+            })
+
+        }
+
         logger.log(`SEED de seedPlans ejecutado con éxito`);
         return true;
     }
