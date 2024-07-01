@@ -96,6 +96,10 @@ POST (Con Body en Form Data y Adjuntos [Propiedad: imagePlan])   - localhost:550
 ## Pendiente ##
 DEBEMOS REVISAR VARIAS COSAS:
 
-1. Funcionalidad de reservaciones.
-2. Funcionalidad de generar informes (Conecatado con nuevo curso)
-3. Finalizar la dockerización
+1. Revisar la funcionalidad de todos los registrar luego de haber ejecutado el SEED
+2. Funcionalidad de reservaciones.
+3. Funcionalidad de generar informes (Conecatado con nuevo curso) y envío de email
+4. Revisar implementación de restaurante/consumos
+5. Revisar implementación de compras de insumos
+6. Revisar implementación de mantenimientos de habitación
+7. Finalizar la dockerización
