@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+
+  postgres-pdx-db:
+    image: postgres:16.3-alpine3.19
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_PDX_USER}
+      POSTGRES_DB: ${DB_PDX_NAME}
+      POSTGRES_PASSWORD: ${DB_PDX_PASSWORD}
+    container_name: pdx_apphostalpaly
+    volumes:
+      - ./containers/pdx/postgres:/var/lib/postgresql/data
+    ports:
+      - ${DB_PDX_PORT_DOCKER}:${DB_PDX_PORT_POSTGRES}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_PDX_USER} -d ${DB_PDX_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pdx_apphostalpaly:
+    depends_on:
+      postgres-pdx-db:
+        condition: service_healthy
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hostalpaly-nest-graphql
+    container_name: pdx_apphostalpaly_dockerfile
+    restart: always # Reiniciar el contenedor si se detiene
+    ports:
+      - "${PORT_PDX}:${PORT_PDX}"
+
+    environment:
+      DB_PDX_USER: ${DB_PDX_USER}
+      DB_PDX_NAME: ${DB_PDX_NAME}
+      DB_PDX_PASSWORD: ${DB_PDX_PASSWORD}
+      DB_PDX_PORT_DOCKER: ${DB_PDX_PORT_DOCKER}
+      DB_PDX_PORT_POSTGRES: ${DB_PDX_PORT_POSTGRES} #De las adicionales
+      DB_PDX_HOST: ${DB_PDX_HOST} #De las adicionales
+      DB_PDX_TYPE: ${DB_PDX_TYPE} #De las adicionales
+      PORT_PDX: ${PORT_PDX}
+      JWT_SECRET: ${JWT_SECRET} #De las adicionales
+      SEND_EMAIL: ${SEND_EMAIL} #De las adicionales
+      MAILER_SERVICE: ${MAILER_SERVICE} #De las adicionales
+      MAILER_EMAIL: ${MAILER_EMAIL} #De las adicionales
+      MAILER_SECRET_KEY: ${MAILER_SECRET_KEY} #De las adicionales
+      CLOUDINARY_NAME: ${CLOUDINARY_NAME} #De las adicionales
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY} #De las adicionales
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET} #De las adicionales
+      DATABASE_URL: ${DATABASE_URL} #De las adicionales
+      WEB_SERVICE_URL: ${WEB_SERVICE_URL} #De las adicionales
+      WEB_APOLLO_SERVICE_URL_DEV: ${WEB_APOLLO_SERVICE_URL_DEV} #De las adicionales
+      WEB_APOLLO_SERVICE_URL_PDX: ${WEB_APOLLO_SERVICE_URL_PDX} #De las adicionales

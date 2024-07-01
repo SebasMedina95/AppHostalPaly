@@ -7,7 +7,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default'; //Config especial por versión.
 
 import { IntroModule } from './config/intro/intro.module';
-import { dataSourceOptions } from './config/database/data-source';
+// import { dataSourceOptions } from './config/database/data-source';
 import { FilesModule } from './helpers/uploads/files.module';
 
 import { ComfortsModule } from './modules/comforts/comforts.module';
@@ -28,7 +28,7 @@ import { SeedModule } from './modules/seed/seed.module';
     ConfigModule.forRoot({ isGlobal: true }),
 
     //? Configuración del TypeORM y PostgreSQL
-    TypeOrmModule.forRoot(dataSourceOptions),
+    // TypeOrmModule.forRoot(dataSourceOptions),
 
     //? Servidor Estático
     //* NOTA: Descomentarlo para desplegar

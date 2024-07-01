@@ -14,54 +14,54 @@ Una vez descagada la aplicación, siga los siguientes pasos:
 $ npm install
 ```
 2. Renombre el archivo ``.env.template`` a ``.env`` y configure las variables de entorno
-3. Ejecute el comando para levantar la imagen de Docker:
+3. Ejecute el comando para levantar la imagen de Docker (*DESARROLLO*):
+*Nota*: Este comando se conecta por defecto con las variables de entorno de `.env`. Pero aún así lo definimos por si algo.
 ```bash
-$ docker compose up -d
+$ docker-compose -f docker-compose.dev.yml --env-file .env up -d
 ```
 4. Una vez levantada la base de datos, creemos sus tablas respectivas, para ello debemos ejecutar todas las migraciones que componen la base de datos con el comando:
 ```bash
-$ npm run migration:run
+$ npx prisma migrate deploy
 ```
 Posterior a este paso, corroboar en la base de datos la creación de las tablas.
 
 5. Ejecute el siguiente comando (SEED) para llenar la información inicial de la base de datos, esto es una semilla de información preliminar para arrancar a usar los aspectos básicos del sistema, ejecute el siguiente END POINT usando el verbo POST (No requiere por ahora auth):
 ```bash
-$ // P E N D I E N T E //
+$ El SEED se encuentra entre las opciones en Apollo Studio
 ```
-6. Ejecutar en modo desarrollo usando el comando:
+1. Ejecutar en modo desarrollo usando el comando:
 ```bash
 $ npm run start:dev
 ```
-7. Puede verificar que la aplicación este OK en la terminal o bien entrando al sitio:
+1. Puede verificar que la aplicación este OK en la terminal o bien entrando al sitio:
 ```bash
 $ http://localhost:*PORT*/api-hostalpaly
 ```
 Si en el caso anterior no obtiene respuesta, asegurece de tener el servidor estático configurado, al ser una aplicación con GraphQL entonces la configuración está dada para la confguración por defecto del servidor de Apollo.
-8. Para la revisión en Apollo Studio, ingrese a la siguiente URL pero teniendo el proyecto en ejecución DEV:
+1. Para la revisión en Apollo Studio, ingrese a la siguiente URL pero teniendo el proyecto en ejecución DEV:
 ```bash
 $ http://localhost:*PORT*/graphql
 ```
 
+## PASOS PARA LA IMAGEN DE PRODUCCIÓN ##
+Se ha generado el archivo Dockerfile correspondiente así como las adecuaciones de los archivos .yml.
+El archivo ``docker-compose.prod.yml`` es el archivo que ejecutaremos para la imagen de producción,
+mientras que ``docker-compose.dev.yml`` levanta la base de datos en términos de ambiente de desarrollo.
+Para la imagen de producción, usamos las variables de entorno de `.env.prod` donde se encuentra las
+diferencias con las URL de conexión.
 
-
-## ``****** INFORMACIÓN ADICIONAL IMPORTANTE ******`` ##
-## CREACIÓN Y EJECUCIÓN DE MIGRACIONES USANDO TYPEORM ##
-1. Para la creación de las migraciones, debemos ejecutar el comando:
+Para crear la imagen de producción debemos ejecutar el comando:
 ```bash
-$ npm run migration:generate ./src/config/database/migrations/NOMBRE_DE_MIGRACION
+$ docker-compose -f docker-compose.pdx.yml --env-file .env up --build
 ```
-Debemos cambiar el ``NOMBRE_DE_MIGRACION`` por el nombre que le vayamos a dar a la migración, es de suma importancia y recomendación que los nombres de la migración no tengan espacios, usar ``-`` o ``_`` como separadores.
 
-2. Para la ejecución de la(s) migración(es) debemos usar el comando:
-```bash
-$ npm run migration:run
-```
-Este comando ejecutará todas las migraciones que hayan en la carpeta de migraciones dentro del proyecto, por eso es importante tenerlas actualizadas al orden del día. Al iniciar el proyecto la primera vez, debemos ejecutar este comando para poder generar la base de datos.
+# Consideraciones de la Dockerización:
+La Dockerización a la fecha está en un 75% de su funcionalidad, aún se debe resolver el tema de ciertos esquemas de seguridad,
+y también, no hemos podido incorporar en el Dockerfile la posibilidad de que se ejecuten las migraciones automáticamente, entonces,
+hemos tenido que meternos al contenedor y ejecutarlas manualmente con el comando `npx prisma migrate deploy` ya que hemos copiado
+la carpeta de las migraciones, es algo que iremos puliendo pero hemos dockerizado y tenemos ahora una BD de DEV y ya tenemos una
+para PDX que comparten los esquemas de trabajo.
 
-3. Si desea revertir la última migración, podemos usar el comando:
-```bash
-$ npm run migration:rollback
-```
 
 ## CREACIÓN Y EJECUCIÓN DE MIGRACIONES USANDO PRISMA ##
 - Creación y ejecución de migraciones para la base de datos:
@@ -75,6 +75,11 @@ $ npm run migration:rollback
     **NOTA:** Se recomienda ejecutar como Administrador.
     ```
     npx prisma generate
+    ```
+  - Para ejecutar las migraciones existentes
+    **NOTA:** Se recomienda ejecutar como Administrador.
+    ```
+    npx prisma migrate deploy
     ```
 
 ## APUNTES ADICIONALES ##
@@ -91,8 +96,6 @@ POST (Con Body en Form Data y Adjuntos [Propiedad: imagePlan])   - localhost:550
 ## Pendiente ##
 DEBEMOS REVISAR VARIAS COSAS:
 
-1. AJUSTAR LA DOCUMENTACIÓN PARA QUE SEA CLARO CUANDO Y COMO DEBEMOS USAR:
-    - END POINT API REST PARA CARGAR VARIAS IMAGENES PARA CATEGORÍAS AL TIEMPO
-    - END POINT API REST PARA CARGAR UNA IMAGEN PARA EL AVATAR DEL USUARIO
-    - END POINT API REST PARA ENVIAR EMAIL DE VERIFICACIÓN DE CUENTA
-    - END POINT API REST PARA ENVIAR EMAIL DE RECUPERACIÓN DE CUENTA
+1. Funcionalidad de reservaciones.
+2. Funcionalidad de generar informes (Conecatado con nuevo curso)
+3. Finalizar la dockerización

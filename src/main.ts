@@ -22,9 +22,20 @@ async function bootstrap() {
   //? Configuración del cors
   app.enableCors();
 
+  //? Defino puerto a usar:
+  let port: number;
+  let apollo: string;
+  if( process.env.STAGE == "dev" ){
+    port = Number(process.env.PORT);
+    apollo = process.env.WEB_APOLLO_SERVICE_URL_DEV;
+  }else{
+    port = Number(process.env.PORT_PDX);
+    apollo = process.env.WEB_APOLLO_SERVICE_URL_PDX;
+  }
+
   //? Configuración de puerto
-  await app.listen( process.env.PORT );
-  logger.log(`La APP está corriendo en puerto ${process.env.PORT}`);
-  logger.log(`El Servidor de Apollo está corriendo en ${process.env.WEB_APOLLO_SERVICE_URL}`);
+  await app.listen( port );
+  logger.log(`La APP está corriendo en puerto ${port}`);
+  logger.log(`El Servidor de Apollo está corriendo en ${apollo}`);
 }
 bootstrap();
