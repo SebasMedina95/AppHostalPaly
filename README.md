@@ -29,16 +29,16 @@ Posterior a este paso, corroboar en la base de datos la creación de las tablas.
 ```bash
 $ El SEED se encuentra entre las opciones en Apollo Studio
 ```
-1. Ejecutar en modo desarrollo usando el comando:
+6. Ejecutar en modo desarrollo usando el comando:
 ```bash
 $ npm run start:dev
 ```
-1. Puede verificar que la aplicación este OK en la terminal o bien entrando al sitio:
+7. Puede verificar que la aplicación este OK en la terminal o bien entrando al sitio:
 ```bash
 $ http://localhost:*PORT*/api-hostalpaly
 ```
 Si en el caso anterior no obtiene respuesta, asegurece de tener el servidor estático configurado, al ser una aplicación con GraphQL entonces la configuración está dada para la confguración por defecto del servidor de Apollo.
-1. Para la revisión en Apollo Studio, ingrese a la siguiente URL pero teniendo el proyecto en ejecución DEV:
+8. Para la revisión en Apollo Studio, ingrese a la siguiente URL pero teniendo el proyecto en ejecución DEV:
 ```bash
 $ http://localhost:*PORT*/graphql
 ```
