@@ -36,4 +36,4 @@ lerna-debug.log*
 
 # Adicional
 .env
-/containers
+#/containers ## Vamos a usar el contenedor con la información

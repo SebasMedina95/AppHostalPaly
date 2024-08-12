@@ -200,5 +200,25 @@ export const SEED_COMFORTS: Comfort[] = [
         createDateAt: new Date(),
         userUpdateAt: "jsebastian19952011@gmail.com",
         updateDateAt: new Date()
+    },
+    {
+        id: 21,
+        name: "Cama Redonda",
+        description: "Latin words, combined with a handful of model sentence.",
+        status: true,
+        userCreateAt: "jsebastian19952011@gmail.com",
+        createDateAt: new Date(),
+        userUpdateAt: "jsebastian19952011@gmail.com",
+        updateDateAt: new Date()
+    },
+    {
+        id: 22,
+        name: "Parqueadero Privado",
+        description: "Lorem Ipsum is therefore always free from repetitionsdf.",
+        status: true,
+        userCreateAt: "jsebastian19952011@gmail.com",
+        createDateAt: new Date(),
+        userUpdateAt: "jsebastian19952011@gmail.com",
+        updateDateAt: new Date()
     }
 ]

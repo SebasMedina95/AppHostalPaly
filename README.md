@@ -17,7 +17,7 @@ $ npm install
 3. Ejecute el comando para levantar la imagen de Docker (*DESARROLLO*):
 *Nota*: Este comando se conecta por defecto con las variables de entorno de `.env`. Pero aún así lo definimos por si algo.
 ```bash
-$ docker-compose -f docker-compose.dev.yml --env-file .env up -d
+$ docker-compose -f docker-compose.dev.yml --env-file .env -p api_graphql_hostalpaly up -d
 ```
 4. Una vez levantada la base de datos, creemos sus tablas respectivas, para ello debemos ejecutar todas las migraciones que componen la base de datos con el comando:
 ```bash
@@ -27,6 +27,7 @@ Posterior a este paso, corroboar en la base de datos la creación de las tablas.
 
 5. Ejecute el siguiente comando (SEED) para llenar la información inicial de la base de datos, esto es una semilla de información preliminar para arrancar a usar los aspectos básicos del sistema, ejecute el siguiente END POINT usando el verbo POST (No requiere por ahora auth):
 ```bash
+  NOTA => NO ESTARÁ HABILITADO POR AHORA - PRUEBAS. (11/08/2024)
 $ El SEED se encuentra entre las opciones en Apollo Studio
 ```
 6. Ejecutar en modo desarrollo usando el comando:
@@ -96,10 +97,10 @@ POST (Con Body en Form Data y Adjuntos [Propiedad: imagePlan])   - localhost:550
 ## Pendiente ##
 DEBEMOS REVISAR VARIAS COSAS:
 
-1. Revisar la funcionalidad de todos los registrar luego de haber ejecutado el SEED
-2. Funcionalidad de reservaciones.
-3. Funcionalidad de generar informes (Conecatado con nuevo curso) y envío de email
-4. Revisar implementación de restaurante/consumos
-5. Revisar implementación de compras de insumos
-6. Revisar implementación de mantenimientos de habitación
-7. Finalizar la dockerización
+1. Incluir el que tiene cada plan (Funcionalidad de lo que incluye [Un campo array String] en planes?)
+1. Funcionalidad de reservaciones.
+2. Funcionalidad de generar informes (Conecatado con nuevo curso) y envío de email
+3. Revisar implementación de restaurante/consumos
+4. Revisar implementación de compras de insumos
+5. Revisar implementación de mantenimientos de habitación
+6. Finalizar la dockerización

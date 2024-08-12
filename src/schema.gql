@@ -334,6 +334,9 @@ type Mutation {
   """Bloquear un usuario"""
   blockUser(id: Int!): User!
 
+  """Actualizar roles un usuario"""
+  updateRolesUser(id: Int!, roles: [String!]!): User!
+
   """Crear una nueva categoría"""
   createCategory(createCategoryInput: CreateCategoryInput!): CategoryResponse!
 
@@ -363,9 +366,6 @@ type Mutation {
   createReservation(createReservationInput: CreateReservationInput!): Reservation!
   updateReservation(updateReservationInput: UpdateReservationInput!): Reservation!
   removeReservation(id: Int!): Reservation!
-
-  """Ejecutar SEED para Poblar la BD"""
-  executeSeed: Boolean!
 }
 
 input CreateComfortInput {

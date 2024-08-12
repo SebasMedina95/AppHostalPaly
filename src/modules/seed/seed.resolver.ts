@@ -8,11 +8,12 @@ export class SeedResolver {
     private readonly seedService: SeedService
   ) {}
 
-  @Mutation( () => Boolean, { name: "executeSeed", description: "Ejecutar SEED para Poblar la BD" })
-  async executeSeed(): Promise<boolean> {
+  //!Vamos a desactivarlo para validar unos temas de inserción.
+  // @Mutation( () => Boolean, { name: "executeSeed", description: "Ejecutar SEED para Poblar la BD" })
+  // async executeSeed(): Promise<boolean> {
 
-    return this.seedService.executeSeed();
+  //   return this.seedService.executeSeed();
 
-  }
+  // }
 
 }

@@ -23,13 +23,8 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 @Resolver(() => User)
 @UseGuards( JwtAuthGuard ) //? El JwtAuthGuard es mi Guard personalizado para GraphQL
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService) {}
 
-  //? Lo manejaremos en el módulo de Auth
-  // @Mutation(() => User)
-  // createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-  //   return this.usersService.create(createUserInput);
-  // }
+  constructor(private readonly usersService: UsersService) {}
 
   @Query(() => UserPaginationResponse, { name: 'findAllUsers', description: "Listar todos los usuarios con filtro y paginación" })
   async findAll(
@@ -41,19 +36,8 @@ export class UsersResolver {
 
   }
 
-  //? Lo manejaremos en el módulo de Auth
-  // @Mutation(() => User)
-  // updateUser(
-  //   @Args('updateUserInput') updateUserInput: UpdateUserInput
-  // ): Promise<User | CustomError> {
-
-  //   throw new Error("Método no implementado");
-  //   return this.usersService.update(updateUserInput.id, updateUserInput);
-
-  // }
-
   @Mutation(() => User, { name: 'blockUser', description: 'Bloquear un usuario' })
-  blockUser(
+  async blockUser(
     @Args('id', { type: () => Int }) id: number,
     @CurrentUser([ ValidRoles.ADMIN ]) user: User
   ): Promise<User | CustomError> {
@@ -61,4 +45,32 @@ export class UsersResolver {
     return this.usersService.block(id);
 
   }
+
+  @Mutation(() => User, { name: 'updateRolesUser', description: 'Actualizar roles un usuario' })
+  async updateRolesUser(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('roles', { type: () => [String] }) roles: string[],
+    @CurrentUser([ ValidRoles.ADMIN ]) user: User
+  ): Promise<User | CustomError> {
+
+    return this.usersService.updateRolesUser(id, roles, user);
+
+  }
+
+  //? Lo manejaremos en el módulo de Auth
+  // @Mutation(() => User)
+  // createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
+  //   return this.usersService.create(createUserInput);
+  // }
+
+  //? Lo manejaremos en el módulo de Auth
+  // @Mutation(() => User)
+  // updateUser(
+  //   @Args('updateUserInput') updateUserInput: UpdateUserInput
+  // ): Promise<User | CustomError> {
+  //   throw new Error("Método no implementado");
+  //   return this.usersService.update(updateUserInput.id, updateUserInput);
+  // }
+
+
 }

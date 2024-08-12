@@ -18,6 +18,7 @@ import { User } from './entities/user.entity';
 import { PrismaService } from '../../config/prisma/prisma.service';
 import { PageMetaInput } from '../../helpers/pagination/dto/page-meta.input';
 import { PageInput } from '../../helpers/pagination/dto/page.input';
+import { ValidRoles } from 'src/constants/roles.enum';
 
 @Injectable()
 export class UsersService {
@@ -357,5 +358,58 @@ export class UsersService {
     }
 
   }
+
+  async updateRolesUser(id: number, roles: string[], user: User): Promise<User | CustomError> {
+
+    const logger = new Logger('UsersService - updateRolesUser');
+
+    try {
+
+      //1. Verificamos existencia del usuario
+      const getUser = await this.prisma.tBL_USERS.findFirst({
+        where: {
+          AND: [
+            { id: user.id },
+            { isBlock: false }
+          ]
+        }
+      })
+
+      if( !getUser )
+        throw CustomError.badRequestError(`No se encontró el usuario o se encuentra bloqueado para actualizar.`);
+
+      //2 Validemos los roles que llegan
+      const validRoles = Object.values(ValidRoles) as ValidRoles[];
+      const validationOfRoles = roles.every(role => validRoles.includes(role as ValidRoles));
+      
+      if( !validationOfRoles )
+        throw CustomError.badRequestError(`Los roles que llegan como parámetros son inválidos.`);
+
+      //Procedemos a actualizar de ser el caso
+      const updateUser = await this.prisma.tBL_USERS.update({
+        where: { id },
+        data: {
+          roles
+        }
+      })
+
+      return updateUser;
+      
+    } catch (error) {
+
+      logger.log(`Ocurrió un error al intentar actualizar los roles del usuario: ${error}`);
+      throw CustomError.internalServerError(`${error}`);
+      
+    } finally {
+      
+      logger.log(`Actualización de roles finalizada`);
+      await this.prisma.$disconnect();
+
+    }
+
+  }
+
+
+
 
 }
