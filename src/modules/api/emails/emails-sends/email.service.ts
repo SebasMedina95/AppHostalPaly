@@ -29,9 +29,9 @@ export class EmailService {
             }
         });
 
-        // console.log({mailerService});
-        // console.log({mailerEmail});
-        // console.log({mailerSecretKey});
+        console.log({mailerService});
+        console.log({mailerEmail});
+        console.log({mailerSecretKey});
 
     }
 
@@ -41,7 +41,7 @@ export class EmailService {
 
         try {
 
-            if( !this.configService.get<boolean>('SEND_EMAIL') ) return true;
+            if( this.configService.get<string>('SEND_EMAIL') == "N" ) return true;
 
             await this.transporter.sendMail({
                 to: to,
@@ -54,6 +54,8 @@ export class EmailService {
 
         } catch ( error ) {
 
+            this.logger.error(`No se pudo enviar el email, a causa de un error general`);
+            this.logger.error(error);
             return false;
 
         }
@@ -135,6 +137,8 @@ export class EmailService {
             subject: "Validación de Email",
             htmlBody: html
         }
+
+        console.log("Vamos por aquí :)")
 
         const isSent = await this.sendEmail( options );
         if( !isSent ) return false;

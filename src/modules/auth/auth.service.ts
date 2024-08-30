@@ -43,8 +43,12 @@ export class AuthService {
       //* Paso 2. Envío el Email de confirmación
       const sendEmail: boolean = await this.emailService.sendEmailValidationUser(user, signupInput);
       
-      if( !sendEmail )
-        return CustomError.badRequestError("Ocurrió algún error al enviar el email");
+      if( !sendEmail ){
+
+        // return CustomError.badRequestError("Ocurrió algún error al enviar el email");
+        logger.warn(`No se pudo enviar el email, el correo no es válido o esta inhabilitada la opción`);
+      
+      }
 
       //* Paso 3. Genero token (Podría ser opcional, tendrá más sentido en el Login)
       const token: string = this.getJwtToken( user.id );

@@ -86,12 +86,49 @@ para PDX que comparten los esquemas de trabajo.
 ## APUNTES ADICIONALES ##
 - Se crearon Types para manejar la estructuración de la paginación con GraphQL y generar un tipado más estructurado conforme a los requerimientos. Lo que ocurre es que como se maneja diferente a NestJS sin GraphQL el tema de la paginación, nos apoyamos de los Types por Módulos para generar una estructura genérica mejor implementada para una paginación que provea mejor información así como el tema del filtro.
 - Para la confirmación del correo electrónico, recuperación de contraseña y gestión de archivos/imágenes, a pesar de que estamos trabajando con GraphQL End Points, se optó por crear un sub modulo que funcionara como una API RESTful tradicional solamente para la generación del cambio de comprobación de email así como también para la carga de adjuntos (imágenes y posiblemente se expandirá para archivos pdf), esto con la finalidad de no dar tantas vueltas y generar una solución más efectiva sin salirnos del marco de GraphQL (Por medio de documentación y diferentes foros, las nuevas versiones de GraphQL y NestJS han hecho muy complicada la implementación de estos dos aspectos forzando incluso a trabajar con versiones antiguas y ya con vulnerabilidades ...). Información del end point REST:
+
+```bash
+GET  (Sin Body, ejecutado por URL a través del Link enviado)
+localhost:5500/api-hostalpaly/v1/email/verify-email/:idUsuario
 ```
-GET  (Sin Body, ejecutado por URL a través del Link enviado)     - localhost:5500/api-hostalpaly/v1/email/verify-email/:idUsuario
-GET  (Sin Body, ejecutado por URL a través del Link enviado)     - localhost:5500/api-hostalpaly/v1/email/recovery-passwor/`:password-:idUsuario`
-POST (Con Body en Form Data y Adjuntos [Propiedad: imagesRooms]) - localhost:5500/api-hostalpaly/v1/uploads/rooms/:idCategory
-POST (Con Body en Form Data y Adjuntos [Propiedad: imageUser])   - localhost:5500/api-hostalpaly/v1/uploads/user/:idUsuario
-POST (Con Body en Form Data y Adjuntos [Propiedad: imagePlan])   - localhost:5500/api-hostalpaly/v1/uploads/plan/:idPlan
+
+```bash
+GET  (Sin Body, ejecutado por URL a través del Link enviado)
+localhost:5500/api-hostalpaly/v1/email/recovery-passwor/`:password-:idUsuario`
+```
+
+```bash
+POST (Con Body en Form Data y Adjuntos [Propiedad: imagesRooms])
+localhost:5500/api-hostalpaly/v1/uploads/rooms/:idCategory
+```
+
+```bash
+POST (Con Body en Form Data y Adjuntos [Propiedad: imageUser]) 
+localhost:5500/api-hostalpaly/v1/uploads/user/:idUsuario
+```
+
+```bash
+POST (Con Body en Form Data y Adjuntos [Propiedad: imagePlan])
+localhost:5500/api-hostalpaly/v1/uploads/plan/:idPlan
+```
+
+### INFORMACIÓN ÚTIL PARA EL AMBIENTE DE DESARROLLO ###
+- En caso de tener que reiniciar todo, considere este Body para el registro de usuario y luego hacer Login:
+```
+{
+  "signupInput": {
+    "email": "jsebastian19952011@gmail.com",
+    "gender": "M",
+    "img": null,
+    "isBlock": null,
+    "lastnames": "Medina Toro",
+    "names": "Juan Sebastian",
+    "password": "_Sebas123",
+    "passwordConfirm": "_Sebas123",
+    "phone1": "3117115833",
+    "phone2": null
+  }
+}
 ```
 
 ## Pendiente ##
